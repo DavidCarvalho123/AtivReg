@@ -11,9 +11,22 @@
                         <i class="zmdi zmdi-font"></i>
                     </span>
 
+                    @if ($errors->any())
+                        <div class="alert alert-danger" role="alert">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                    @if ($error == 'Faltam campos para preencher.')
+                                        <?php break; ?>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <!-- Email -->
                     <div class="wrap-input100 validate-input">
-                        <input class="input100" type="email" name="email"  id="email" placeholder="Email" wire:model.defer="form.email" value="{{ old('email') }}">
+                        <input class="input100" type="email" name="email" id="email" placeholder="Email" wire:model.defer="form.email">
                         <span class="focus-input100"></span>
                         @error('email')
                             <span class="invalid-feedback" role="alert">

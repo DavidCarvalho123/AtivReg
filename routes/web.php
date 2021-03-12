@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,9 +21,39 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('inicio');
 });
+
+
+
+
+
 Route::get('/dashboard', function () {
-    return view('layouts.lightdashboardbase');
+    if(Gate::denies('sadmin-only', Auth::user()))
+    {
+        return view('layouts.lightdashboardbase');
+    }
+    else
+    {
+        return redirect('/');
+    }
+
 })->middleware('auth');
+
+Route::get('/sadmin', function (){
+    if(Gate::allows('sadmin-only', Auth::user()))
+    {
+        return view('superadmin.sadmin');
+    }
+    else
+    {
+        return redirect('/Login');
+    }
+
+});
+
+
+
+
+
 Route::get('/docs', function (){
     return view('layouts.documentacao');
 });

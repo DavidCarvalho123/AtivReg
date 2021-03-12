@@ -8,6 +8,7 @@ use Livewire\Component;
 class Register extends Component
 {
     public $form = [
+        'db' => 'ativreg',
         'name' => '',
         'email' => '',
         'password' => '',

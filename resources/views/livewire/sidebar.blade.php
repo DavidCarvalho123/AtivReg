@@ -17,7 +17,7 @@ Tip 2: you can also add an image using data-image tag
         para preencher uma intervenção
 
     -->
-    
+
     <div class="sidebar-wrapper">
         <div class="logo">
             <a href="" class="simple-text">
@@ -28,7 +28,7 @@ Tip 2: you can also add an image using data-image tag
         <ul class="nav">
 
             <li class="nav-item active">
-                <a class="nav-link" href="dashboard.html">
+                <a class="nav-link" wire:click="$emit('PaginaPrincipal')">
                     <i class="nc-icon nc-icon nc-paper-2"></i>
                     <p>Página Principal</p>
                 </a>

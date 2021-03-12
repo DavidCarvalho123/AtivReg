@@ -3,6 +3,11 @@
         <nav>
             <ul class="footer-menu">
                 <li>
+                    <a href="/">
+                        Início
+                    </a>
+                </li>
+                <li>
                     <a href="/docs">
                         Documentação
                     </a>
