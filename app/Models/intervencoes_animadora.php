@@ -28,4 +28,9 @@ class intervencoes_animadora extends Model
     {
         return $this->morphOne(intervencoesindividuai::class,'infoable');
     }
+
+    public function Niveis()
+    {
+        return $this->morphToMany(Nivei::class, 'tableable');
+    }
 }

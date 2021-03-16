@@ -11,10 +11,11 @@
                         <i class="zmdi zmdi-font"></i>
                     </span>
 
-                    @if ($errors->any())
+                    @if ($errors->any() == true)
                         <div class="alert alert-danger" role="alert">
                             <ul>
                                 @foreach ($errors->all() as $error)
+                                    <?php $counter = 0; ?>
                                     <li>{{ $error }}</li>
                                     @if ($error == 'Faltam campos para preencher.')
                                         <?php break; ?>
@@ -24,6 +25,14 @@
                         </div>
                     @endif
 
+                    @if($counter == 1)
+                        <div class="alert alert-danger" role="alert">
+                            <ul>
+                                <?php $counter = 0; ?>
+                                <li>Credenciais inválidas</li>
+                            </ul>
+                        </div>
+                    @endif
                     <!-- Email -->
                     <div class="wrap-input100 validate-input">
                         <input class="input100" type="email" name="email" id="email" placeholder="Email" wire:model.defer="form.email">

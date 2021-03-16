@@ -11,7 +11,7 @@
 =========================================================
 
  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.*/
- 
+
 /*      light colors         */
 
 @keyframes spin {
@@ -78,6 +78,12 @@ button.close {
     -webkit-font-smoothing: antialiased;
     font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
+}
+
+br {
+    display: block; /* makes it have a width */
+    content: ""; /* clears default height */
+    margin-top: 0px; /* change this to whatever height you want it */
 }
 
 h1,

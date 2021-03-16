@@ -14,6 +14,7 @@ class Cliente extends Model
         'nome',
         'apelido',
         'data_entrou',
+        'notas',
         'unidades_id',
     ];
 

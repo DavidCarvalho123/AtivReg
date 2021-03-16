@@ -59,9 +59,9 @@ Route::get('/docs', function (){
 });
 Route::group(['middleware' => 'guest'],function(){
 
-    Route::get('/Login', function(){
+    Route::get('/{url1}', function($url1){
     return view('auth.baselogin');
-    })->name('Login');
+    })->name('Login')->where(['url1' => 'login|Login']);
 
     Route::get('/Register', function(){
         return view('auth.baseregister');
