@@ -15,11 +15,11 @@ class CreateGruposClientesTable extends Migration
     {
         Schema::connection('mysql2')->create('grupos_clientes', function (Blueprint $table){
             $table->id();
-            $table->BigInteger('grupos_id')->unsigned();
-            $table->BigInteger('clientes_id')->unsigned();
+            $table->BigInteger('grupo_id')->unsigned();
+            $table->BigInteger('cliente_id')->unsigned();
             $table->timestamps();
-            $table->foreign('clientes_id')->references('id')->on('clientes')->onDelete('cascade');
-            $table->foreign('grupos_id')->references('id')->on('grupos')->onDelete('cascade');
+            $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
+            $table->foreign('grupo_id')->references('id')->on('grupos')->onDelete('cascade');
         });
     }
 

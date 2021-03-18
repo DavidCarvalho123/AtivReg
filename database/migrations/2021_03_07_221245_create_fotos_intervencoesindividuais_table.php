@@ -16,10 +16,10 @@ class CreateFotosIntervencoesindividuaisTable extends Migration
         Schema::connection('mysql2')->create('fotos_intervencoesindividuais', function (Blueprint $table){
             $table->id();
             $table->BigInteger('fotos_id')->unsigned();
-            $table->BigInteger('intervencoesindividuais_id')->unsigned();
+            $table->BigInteger('intervencoesindividuai_id')->unsigned();
             $table->timestamps();
             $table->foreign('fotos_id')->references('id')->on('fotos')->onDelete('cascade');
-            $table->foreign('intervencoesindividuais_id')->references('id')->on('intervencoesindividuais')->onDelete('cascade');
+            $table->foreign('intervencoesindividuai_id')->references('id')->on('intervencoesindividuais')->onDelete('cascade');
         });
     }
 

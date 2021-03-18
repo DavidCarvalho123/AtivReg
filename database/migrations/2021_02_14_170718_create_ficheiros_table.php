@@ -17,6 +17,7 @@ class CreateFicheirosTable extends Migration
             $table->id();
             $table->string('link');
             $table->string('nome_ficheiro',60);
+            $table->string('descricao_ficheiro');
             $table->timestamps();
         });
     }

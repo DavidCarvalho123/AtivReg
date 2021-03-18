@@ -27,8 +27,8 @@ Tip 2: you can also add an image using data-image tag
 
         <ul class="nav" id="myDIV">
 
-            <li class="nav-item active">
-                <a class="nav-link" href="#" onclick="event.preventDefault();" wire:click="$emit('PaginaPrincipal')">
+            <li class="nav-item active" wire:click="PaginaPrincipal">
+                <a class="nav-link" href="#" onclick="event.preventDefault();" >
                     <i class="nc-icon nc-icon nc-paper-2"></i>
                     <p>Página Principal</p>
                 </a>
@@ -36,9 +36,9 @@ Tip 2: you can also add an image using data-image tag
 
 
             @foreach ($titulos as $titulo)
-<br>
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="event.preventDefault();" wire:click="$emit('')">
+<br style="margin-top: 10px;">
+            <li class="nav-item" wire:click="ViewNiveis">
+                <a class="nav-link" href="#" onclick="event.preventDefault();" >
                     <i class="nc-icon nc-icon nc-paper-2"></i>
                     <p>{{ $titulo }}</p>
                 </a>
@@ -62,3 +62,29 @@ Tip 2: you can also add an image using data-image tag
 
     </div>
 </div>
+<div class="main-panel">
+    @livewire('navbar')
+    <div class="content">
+        <div class="container-fluid">
+            <div class="section">
+                @livewire('interior')
+            </div>
+        </div>
+    </div>
+    @include('lightdashboardparts.footer')
+</div>
+
+<script>
+    var header = document.getElementById("myDIV");
+    var btns = header.getElementsByClassName("nav-item");
+    var element = document.querySelector('.active');
+    for (var i = 0; i < btns.length; i++)
+     {
+        btns[i].addEventListener("click", function()
+        {
+            var current = document.getElementsByClassName("active");
+            current[0].className = current[0].className.replace(" active", "");
+            this.className += " active";
+        });
+    }
+</script>

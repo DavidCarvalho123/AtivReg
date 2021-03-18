@@ -15,10 +15,10 @@ class CreateColabUnidadesTable extends Migration
     {
         Schema::connection('mysql2')->create('colab_unidades', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('colaboradores_id')->unsigned();
+            $table->bigInteger('colaboradore_id')->unsigned();
             $table->string('unidades_id',6);
             $table->timestamps();
-            $table->foreign('colaboradores_id')->references('id')->on('colaboradores')->onDelete('cascade');
+            $table->foreign('colaboradore_id')->references('id')->on('colaboradores')->onDelete('cascade');
             $table->foreign('unidades_id')->references('id')->on('unidades')->onDelete('cascade');
         });
     }

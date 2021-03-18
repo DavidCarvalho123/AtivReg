@@ -16,10 +16,10 @@ class CreateFicheirosPaginaprincipalsTable extends Migration
         Schema::connection('mysql2')->create('ficheiros_paginaprincipals', function (Blueprint $table){
             $table->id();
             $table->BigInteger('ficheiros_id')->unsigned();
-            $table->BigInteger('paginaprincipal_id')->unsigned();
+            $table->BigInteger('pagina__principal_id')->unsigned();
             $table->timestamps();
             $table->foreign('ficheiros_id')->references('id')->on('ficheiros')->onDelete('cascade');
-            $table->foreign('paginaprincipal_id')->references('id')->on('pagina_principals')->onDelete('cascade');
+            $table->foreign('pagina__principal_id')->references('id')->on('pagina_principals')->onDelete('cascade');
         });
     }
 

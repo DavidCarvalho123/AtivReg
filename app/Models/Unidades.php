@@ -12,10 +12,10 @@ class Unidades extends Model
     protected $connection = "mysql2";
 
     protected $fillable=[
-        'id_unidades', 'unidade','nr_telefone','email'
+        'id', 'unidade','nr_telefone','email'
     ];
 
-    protected $primaryKey = 'id_unidades';
+    protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
 

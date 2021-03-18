@@ -11,13 +11,18 @@ use Livewire\Component;
 class Sidebar extends Component
 {
 
+
     public $titulos = [];
     public $db;
+    public $show;
 
     public function loadPaginaPrincipal()
     {
-        $this->emit('PaginaPrincipal');
+        $this->show = true;
+        $this->emit('PaginaPrincipal', $this->show);
     }
+
+
 
     public function mount()
     {
@@ -53,12 +58,20 @@ class Sidebar extends Component
             {
                 // o user não tem autorização para fazer crud
             }
-
         }
-
-
     }
 
+    public function PaginaPrincipal()
+    {
+        $this->show = true;
+        $this->emit('PaginaPrincipal', $this->show);
+    }
+
+    public function ViewNiveis()
+    {
+        $this->show = false;
+        $this->emit('IrRegistos', $this->show);
+    }
 
     public function render()
     {

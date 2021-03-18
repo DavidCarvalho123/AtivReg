@@ -21,42 +21,13 @@
 
 <body>
     <div class="wrapper">
-        @livewire('sidebar'))
-
-        <div class="main-panel">
-            @include('lightdashboardparts.navbar')
-
-
-
-            <div class="content">
-                <div class="container-fluid">
-                    <div class="section">
-                        <!-- uma livewire component para TUDO usar listeners e $emit -->
-                        @livewire('interior')
-                    </div>
-                </div>
-            </div>
-
-
-
-            @include('lightdashboardparts.footer')
-        </div>
+        @livewire('sidebar')
     </div>
 </body>
     @livewireScripts
 
-    <script>
-        // Add active class to the current button (highlight it)
-        var header = document.getElementById("myDIV");
-        var btns = header.getElementsByClassName("nav-item");
-        for (var i = 0; i < btns.length; i++) {
-          btns[i].addEventListener("click", function() {
-          var current = document.getElementsByClassName("active");
-          current[0].className = current[0].className.replace(" active", "");
-          this.className += " active";
-          });
-        }
-        </script>
+
+
     <!--   Core JS Files   -->
     <script src="{{ asset('../assets/js/core/jquery.3.2.1.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('../assets/js/core/popper.min.js') }}" type="text/javascript"></script>

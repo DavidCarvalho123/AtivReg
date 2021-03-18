@@ -15,11 +15,11 @@ class CreateColabIntervencoesindividuaisTable extends Migration
     {
         Schema::connection('mysql2')->create('colab_intervencoesindividuais', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('colaboradores_id')->unsigned();
-            $table->bigInteger('intervencoesindividuais_id')->unsigned();
+            $table->bigInteger('colaboradore_id')->unsigned();
+            $table->bigInteger('intervencoesindividuai_id')->unsigned();
             $table->timestamps();
-            $table->foreign('colaboradores_id')->references('id')->on('colaboradores')->onDelete('cascade');
-            $table->foreign('intervencoesindividuais_id')->references('id')->on('intervencoesindividuais')->onDelete('cascade');        });
+            $table->foreign('colaboradore_id')->references('id')->on('colaboradores')->onDelete('cascade');
+            $table->foreign('intervencoesindividuai_id')->references('id')->on('intervencoesindividuais')->onDelete('cascade');        });
     }
 
     /**

@@ -13,7 +13,7 @@ class CreatePaginaPrincipalsTable extends Migration
      */
     public function up()
     {
-        Schema::connection('mysql2')->create('pagina_principals', function (Blueprint $table) {
+        Schema::connection('mysql2')->create('pagina__principals', function (Blueprint $table) {
             $table->id();
             $table->string('unidades_id',6);
             $table->foreign('unidades_id')->references('id')->on('unidades');

@@ -10,7 +10,7 @@ class Ficheiros extends Model
     use HasFactory;
     protected $connection = "mysql2";
     protected $fillable=[
-        'link', 'nome_ficheiro',
+        'link', 'nome_ficheiro', 'descricao_ficheiro',
     ];
 
     public function pagina_principal()
