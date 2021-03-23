@@ -6,15 +6,17 @@ use App\Models\Colaboradore;
 use Brotzka\DotenvEditor\DotenvEditor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
 class Sidebar extends Component
 {
 
-
+    public $unidadeescolhida;
     public $titulos = [];
     public $db;
     public $show;
+    protected $listeners = ['refreshEntireComponent', 'render'];
 
     public function loadPaginaPrincipal()
     {
@@ -22,15 +24,29 @@ class Sidebar extends Component
         $this->emit('PaginaPrincipal', $this->show);
     }
 
-
+    public function refreshEntireComponent($recebido)
+    {
+        $this->unidadeescolhida = $recebido;
+        $this->emitSelf('render');
+    }
 
     public function mount()
     {
+        $this->unidadeescolhida = '';
         $env = new DotenvEditor();
         $this->db = $env->getValue('DB_DATABASE2');
         $this->db = str_replace('_', ' ', $this->db);
 
         $colaboradores = Colaboradore::where('email', '=', Auth::user()->email)->first();
+
+        if($colaboradores->unidades->count() == 1 )
+        {
+            foreach($colaboradores->unidades as $obj)
+            {
+                $this->unidadeescolhida = $obj->id;
+            }
+        }
+
         $tables = DB::connection('mysql2')->select("SHOW TABLES LIKE 'intervencoes\_%'");
 
         foreach($tables as $object)
@@ -53,6 +69,7 @@ class Sidebar extends Component
                 //    dd($test);
                 //}
                 array_push($this->titulos, $colaboradores->Niveis->nivel);
+
             }
             else
             {
@@ -67,10 +84,11 @@ class Sidebar extends Component
         $this->emit('PaginaPrincipal', $this->show);
     }
 
-    public function ViewNiveis()
+    public function ViewNiveis($nivel)
     {
+
         $this->show = false;
-        $this->emit('IrRegistos', $this->show);
+        $this->emit('IrRegistos', $this->show, $nivel);
     }
 
     public function render()

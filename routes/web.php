@@ -21,10 +21,6 @@ Route::get('/', function () {
     return view('inicio');
 });
 
-
-
-
-
 Route::get('/dashboard', function () {
     if(Gate::denies('sadmin-only', Auth::user()))
     {
@@ -48,10 +44,6 @@ Route::get('/sadmin', function (){
     }
 
 });
-
-
-
-
 
 Route::get('/docs', function (){
     return view('layouts.documentacao');

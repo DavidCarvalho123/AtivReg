@@ -1,5 +1,8 @@
 
 <div>
+@if ($unidadeescolhida == '')
+
+@else
 
 
 <nav class="navbar navbar-expand-lg " color-on-scroll="500">
@@ -73,4 +76,13 @@
     </div>
 </nav>
 <!-- End Navbar -->
+
 </div>
+<div class="content">
+    <div class="container-fluid">
+        <div class="section">
+            @livewire('interior')
+        </div>
+    </div>
+</div>
+@endif

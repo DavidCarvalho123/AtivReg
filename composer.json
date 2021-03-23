@@ -17,7 +17,8 @@
         "laravel/helpers": "^1.4",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.2",
-        "livewire/livewire": "^2.4"
+        "livewire/livewire": "^2.4",
+        "spatie/pdf-to-image": "^2.1"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

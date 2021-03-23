@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-lg-7 text-center text-lg-left">
             <h1 data-aos="fade-right">Registos diários com AtivReg</h1>
-            <p class="mb-5" data-aos="fade-right" data-aos-delay="100">Disponivel, não exclusivamente, para estruturas residenciais, creches ou escolas privadas.</p>
+            <p class="mb-5" data-aos="fade-right" data-aos-delay="100">Disponivel para estruturas residenciais, creches, escolas privadas, entre outros.</p>
             </div>
             <div class="col-lg-5 iphone-wrap">
             <img src="assets/img/phone_1.png" alt="Image" class="phone-1" data-aos="fade-right">

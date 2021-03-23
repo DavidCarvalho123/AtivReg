@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Colaboradore;
 use Brotzka\DotenvEditor\DotenvEditor;
 
 use Illuminate\Support\Facades\Auth;
