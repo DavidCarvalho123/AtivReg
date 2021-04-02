@@ -28,11 +28,16 @@ class Colaboradore extends Model
 
     public function intervencoesindividuais()
     {
-        return $this->belongsToMany(intervencoesindividuai::class, 'colab_intervencoesindividuais');
+        return $this->hasMany('App\Models\intervencoesindividuai');
     }
 
     public function intervencoesgrupo()
     {
-        return $this->belongsToMany(intervencoesgrupo::class, 'colab_intervencoesgrupos');
+        return $this->hasMany('App\Models\intervencoesgrupo');
+    }
+
+    public function grupos()
+    {
+        return $this->hasMany('App\Models\intervencoesgrupo');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Colaboradore;
 use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
@@ -41,7 +42,20 @@ class AuthServiceProvider extends ServiceProvider
             }
         });
 
-        //
-        
+        // Gate para multi unidades
+        Gate::define('multiuni-only', function (User $user)
+        {
+            $colaboradores = Colaboradore::where('email', '=', Auth::user()->email)->first();
+
+            if($colaboradores->unidades->count() == 1 )
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        });
+
     }
 }

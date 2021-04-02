@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="utf-8">
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <title>{{ config('app.name'), 'Laravel' }}</title>
         <meta content="" name="description">
@@ -25,7 +25,6 @@
 
         <!-- Template Main CSS File -->
         <link href="{{ asset('softland/assets/css/style.css') }}" rel="stylesheet">
-
         <!-- =======================================================
         * Template Name: SoftLand - v2.2.1
         * Template URL: https://bootstrapmade.com/softland-bootstrap-app-landing-page-template/
@@ -45,7 +44,7 @@
             @yield('inicial')
         </main><!-- End #main -->
 
-        
+
         @include('softlandparts.footer')
 
         <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>

@@ -28,7 +28,7 @@ class Nivei extends Model
     }
     public function intervencoes_gestorcliente()
     {
-        return $this->morphedByMany(intervencoes_gestorclientes::class, 'tableable');
+        return $this->morphedByMany(intervencoes_gestorcliente::class, 'tableable');
     }
     public function intervencoes_psicologo()
     {

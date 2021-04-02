@@ -15,7 +15,9 @@ class CreateGruposTable extends Migration
     {
         Schema::connection('mysql2')->create('grupos', function (Blueprint $table) {
             $table->id();
-            $table->text('notas');
+            $table->string('nome');
+            $table->bigInteger('colaborador_id')->unsigned();
+            $table->foreign('colaborador_id')->references('id')->on('colaboradores');
             $table->timestamps();
         });
 

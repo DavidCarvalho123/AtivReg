@@ -56,7 +56,7 @@
                                     <li class="has-children">
                                         <a class="nav-link"><?php echo Auth::user()->name;?></a>
                                         <ul class="dropdown">
-                                            <li><a href="/dashboard" class="nav-link">Painel de Controlo</a></li>
+                                            <li><a href="/unidades" class="nav-link">Painel de Controlo</a></li>
                                             <li><a href="/logout" class="nav-link">Logout</a></li>
                                         </ul>
                                     </li>

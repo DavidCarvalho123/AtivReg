@@ -1,8 +1,6 @@
 <div>
 
-@if ($unidadeescolhida == '')
 
-@else
     <footer class="footer">
         <div class="container-fluid">
             <nav>
@@ -26,5 +24,5 @@
             </nav>
         </div>
     </footer>
-    @endif
+    
 </div>

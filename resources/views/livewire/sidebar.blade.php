@@ -1,11 +1,7 @@
 
 
 
-@if ($unidadeescolhida == '')
-    <div>
-        @livewire('unidade')
-    </div>
-@else
+
     <div class="sidebar" data-color="blue"  wire:init="loadPaginaPrincipal">
         <!--
         Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
@@ -28,7 +24,7 @@
 
         <div class="sidebar-wrapper">
             <div class="logo">
-                <a href="" class="simple-text">
+                <a class="simple-text">
                 <?php echo $db ?>
                 </a>
             </div>
@@ -85,9 +81,9 @@
     </script>
 
     <div class="main-panel">
-        <livewire:navbar/>
-        <livewire:footer/>
+        @livewire('navbar', ['unidade' => $unidade])
+        @livewire('footer')
     </div>
-    @endif
+
 
 

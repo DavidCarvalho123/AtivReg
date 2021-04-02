@@ -18,7 +18,7 @@ class intervencoes_animadora extends Model
     public $incrementing = false;
     protected $keyType = 'string';
     protected $guarded = [];
-
+    
     public function intervencoesgrupo()
     {
         return $this->morphOne(intervencoesgrupo::class,'infoable');

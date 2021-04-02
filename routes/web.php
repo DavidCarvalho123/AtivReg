@@ -21,6 +21,24 @@ Route::get('/', function () {
     return view('inicio');
 });
 
+Route::get('/unidades', function(){
+    if(Gate::denies('sadmin-only', Auth::user()))
+    {
+        if(Gate::allows('multiuni-only', Auth::user()))
+        {
+            return view('auth.baseunidade');
+        }
+        else
+        {
+            return redirect('/dashboard');
+        }
+    }
+    else
+    {
+        return redirect('/');
+    }
+})->middleware('auth');
+
 Route::get('/dashboard', function () {
     if(Gate::denies('sadmin-only', Auth::user()))
     {

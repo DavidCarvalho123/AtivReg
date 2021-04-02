@@ -3,7 +3,10 @@
 namespace App\Http\Livewire;
 
 use App\Models\Colaboradore;
+use App\Models\Unidades;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
 class Unidade extends Component
@@ -13,9 +16,10 @@ class Unidade extends Component
     public $selected;
     public function mount()
     {
+
         $colaboradores = Colaboradore::where('email', '=', Auth::user()->email)->first();
 
-        $this->unidades = $colaboradores->unidades->take(99);
+        $this->unidades = $colaboradores->unidades->take(100);
 
     }
 
@@ -24,8 +28,9 @@ class Unidade extends Component
         $this->validate([
             'selected' => 'required'
         ]);
-
-        $this->emit('refreshEntireComponent', $this->selected);
+        $unidadeselecionado = Unidades::select('unidade')->where('id','=',$this->selected)->first();
+        session()->flash('a', $unidadeselecionado->unidade);
+        return redirect()->to('/dashboard');
     }
 
     public function render()

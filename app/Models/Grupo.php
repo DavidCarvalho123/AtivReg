@@ -10,15 +10,16 @@ class Grupo extends Model
     use HasFactory;
     protected $connection = "mysql2";
     protected $fillable=[
-        'notas',
+        'nome','colaborador_id',
     ];
 
     public function Clientes()
     {
         return $this->belongsToMany(Cliente::class, 'grupos_clientes');
     }
-    public function intervencoesgrupo()
+
+    public function colaboradores()
     {
-        return $this->hasMany('App\Models\intervencoesgrupo');
+        return $this->belongsTo('App\Models\Colaboradore');
     }
 }

@@ -19,7 +19,7 @@ class CreateFicheirosPaginaprincipalsTable extends Migration
             $table->BigInteger('pagina__principal_id')->unsigned();
             $table->timestamps();
             $table->foreign('ficheiros_id')->references('id')->on('ficheiros')->onDelete('cascade');
-            $table->foreign('pagina__principal_id')->references('id')->on('pagina_principals')->onDelete('cascade');
+            $table->foreign('pagina__principal_id')->references('id')->on('pagina__principals')->onDelete('cascade');
         });
     }
 

@@ -1,13 +1,11 @@
 
 <div>
-@if ($unidadeescolhida == '')
 
-@else
 
 
 <nav class="navbar navbar-expand-lg " color-on-scroll="500">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">{{ $titulo }} </a>
+        <a class="navbar-brand">{{ $titulo }} </a>
         <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar burger-lines"></span>
             <span class="navbar-toggler-bar burger-lines"></span>
@@ -23,6 +21,8 @@
                     </a>
                 </li>
                 -->
+
+                <!--
                 <li class="dropdown nav-item">
                     <a href="" class="dropdown-toggle nav-link" data-toggle="dropdown">
                         <i class="nc-icon nc-planet"></i>
@@ -37,6 +37,7 @@
                         <a class="dropdown-item" href="#">Another notification</a>
                     </ul>
                 </li>
+                -->
                 <!--
                 <li class="nav-item">
                     <a href="#" class="nav-link">
@@ -48,9 +49,13 @@
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="">
-                        <span class="no-icon">Account</span>
-                    </a>
+                    @if ($unidade != '')
+                        <a class="nav-link" href="/unidades">
+                            <i class="nc-icon nc-refresh-02" style="margin-right: 10px;padding-bottom: 15px;"></i>
+                            Mudar de unidade
+                        </a>
+                    @endif
+
                 </li>
                 <!--
                 <li class="nav-item dropdown">
@@ -68,9 +73,11 @@
                 </li>
                 -->
                 <li class="nav-item">
-                    <a class="nav-link" href="/logout">Logout</a>
+                    <a class="nav-link" href="/logout">
+                        <i class="nc-icon nc-button-power" style="margin-right: 10px;padding-bottom: 15px;"></i>
+                        Logout
+                    </a>
                 </li>
-
             </ul>
         </div>
     </div>
@@ -81,8 +88,8 @@
 <div class="content">
     <div class="container-fluid">
         <div class="section">
-            @livewire('interior')
+            @livewire('interior', ['unidade' => $unidade])
         </div>
     </div>
 </div>
-@endif
+

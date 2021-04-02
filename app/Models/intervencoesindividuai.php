@@ -10,14 +10,19 @@ class intervencoesindividuai extends Model
     use HasFactory;
     protected $connection = "mysql2";
     protected $fillable=[
-        'data_realizada', 'hora_iniciada', 'hora_terminada', 'info_id', 'cliente_id','grupo_id'
+        'data_realizada', 'hora_iniciada', 'hora_terminada', 'info_id', 'cliente_id','colaborador_id'
     ];
 
     protected $guarded = [];
 
+    protected $casts=[
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
+
     public function fotos()
     {
-        return $this->belongsToMany(fotos::class, 'fotos_intervencoesindividuais');
+        return $this->hasMany('App\Models\fotos');
     }
 
     public function cliente()
@@ -25,14 +30,11 @@ class intervencoesindividuai extends Model
         return $this->belongsTo('App\Models\Cliente');
     }
 
-    public function intervencoesgrupo()
-    {
-        return $this->belongsTo('App\Models\intervencoesgrupo');
-    }
+
 
     public function colaboradores()
     {
-        return $this->belongsToMany(Colaboradore::class, 'colab_intervencoesindividuais');
+        return $this->belongsTo('App\Models\Colaboradore');
     }
 
 

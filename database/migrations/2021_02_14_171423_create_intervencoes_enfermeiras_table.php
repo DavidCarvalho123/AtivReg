@@ -16,9 +16,9 @@ class CreateIntervencoesEnfermeirasTable extends Migration
         Schema::connection('mysql2')->create('intervencoes_enfermeiras', function (Blueprint $table) {
             $table->string('id',7);
             $table->primary('id');
-            $table->tinyInteger('alimentacao');
-            $table->tinyInteger('sono');
-            $table->tinyInteger('higiene');
+            $table->tinyInteger('alimentacao')->nullable();
+            $table->tinyInteger('sono')->nullable();
+            $table->tinyInteger('higiene')->nullable();
             $table->text('notas');
             $table->timestamps();
         });

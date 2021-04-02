@@ -10,7 +10,7 @@ class fotos extends Model
     use HasFactory;
     protected $connection = "mysql2";
     protected $fillable=[
-        'nome_foto', 'link', 'intervencao_grupo_id',
+        'nome_foto', 'link', 'intervencao_grupo_id', 'intervencao_individuai_id'
     ];
 
     public function intervencao_grupo()
@@ -20,6 +20,6 @@ class fotos extends Model
 
     public function intervencao_individual()
     {
-        return $this->belongsToMany(intervencao_individual::class, 'fotos_intervencoesindividuais');
+        return $this->belongsTo('App\Models\intervencoesindividuai');
     }
 }

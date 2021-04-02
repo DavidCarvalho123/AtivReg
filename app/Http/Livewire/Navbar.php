@@ -4,28 +4,31 @@ namespace App\Http\Livewire;
 
 use App\Models\Colaboradore;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
 class Navbar extends Component
 {
-
-    public $unidadeescolhida;
+    public $unidade;
     public $titulo = '';
-    protected $listeners = ['PaginaPrincipal', 'IrRegistos', 'refreshEntireComponent' ,'render'];
-
-    public function refreshEntireComponent($recebido)
-    {
-        $this->unidadeescolhida = $recebido;
-        
-    }
+    protected $listeners = ['PaginaPrincipal', 'IrRegistos'];
 
     public function PaginaPrincipal()
     {
-        $colaboradores = Colaboradore::find(1)->where('email', '=', Auth::user()->email)->get();
-        foreach($colaboradores as $obj)
+
+        if($this->unidade != '')
         {
-            $this->titulo = 'Página principal - '.$obj->unidades->first()->unidade;
+            $this->titulo = 'Página principal - '.$this->unidade;
         }
+        else
+        {
+            $colaboradores = Colaboradore::find(1)->where('email', '=', Auth::user()->email)->get();
+            foreach($colaboradores as $obj)
+            {
+                $this->titulo = 'Página principal - '.$obj->unidades->first()->unidade;
+            }
+        }
+
     }
 
     public function IrRegistos($receive, $titulo)
@@ -35,26 +38,30 @@ class Navbar extends Component
 
     public function mount()
     {
-        $this->unidadeescolhida = '';
-        $colaboradores = Colaboradore::where('email', '=', Auth::user()->email)->first();
 
-        if($colaboradores->unidades->count() == 1 )
+        if($this->unidade != '')
         {
-            foreach($colaboradores->unidades as $obj)
+            $this->titulo = 'Página principal - '.$this->unidade;
+        }
+        else
+        {
+            if(Gate::allows('multiuni-only', Auth::user())) $multiuni = 'true';
+            else $multiuni = 'false';
+            if($multiuni == 'false')
             {
-                $this->unidadeescolhida = $obj->id;
+                $colaboradores = Colaboradore::find(1)->where('email', '=', Auth::user()->email)->get();
+                foreach($colaboradores as $obj)
+                {
+                    $this->titulo = 'Página principal - '.$obj->unidades->first()->unidade;
+                }
+            }
+            else
+            {
+                $this->titulo = 'Página principal - ';
             }
         }
 
-        $colaboradores = Colaboradore::find(1)->where('email', '=', Auth::user()->email)->get();
-        foreach($colaboradores as $obj)
-        {
-            foreach($obj->unidades as $obj2)
-            {
-                $this->titulo = 'Página principal - '.$obj2->unidade;
-            }
 
-        }
         //foreach($colaboradores as $obj)
        //{
         //    dd($obj->unidades);

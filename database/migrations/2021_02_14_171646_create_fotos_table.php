@@ -19,6 +19,8 @@ class CreateFotosTable extends Migration
             $table->string('link');
             $table->bigInteger('intervencao_grupo_id')->unsigned()->nullable();
             $table->foreign('intervencao_grupo_id')->references('id')->on('intervencoesgrupos')->nullable();
+            $table->bigInteger('intervencao_individuai_id')->unsigned()->nullable();
+            $table->foreign('intervencao_individuai_id')->references('id')->on('intervencoesindividuais')->nullable();
             $table->timestamps();
         });
 

@@ -21,7 +21,8 @@ class CreateIntervencoesindividuaisTable extends Migration
             $table->string('infoable_id',7);
             $table->string('infoable_type');
             $table->foreignId('cliente_id')->constrained();
-            $table->foreignId('grupo_id')->constrained()->nullable();
+            $table->bigInteger('colaborador_id')->unsigned();
+            $table->foreign('colaborador_id')->references('id')->on('colaboradores');
             $table->timestamps();
         });
 

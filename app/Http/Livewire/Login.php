@@ -52,7 +52,7 @@ class Login extends Component
                 'DB_DATABASE2' => $bd,
             ]);
 
-            return redirect('/dashboard');
+            return redirect('/unidades');
         }
 
     }
