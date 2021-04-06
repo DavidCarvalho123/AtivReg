@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Livewire;
-
+include 'trata_DB.php';
 use App\Models\Colaboradore;
 use Brotzka\DotenvEditor\DotenvEditor;
 
@@ -26,7 +26,7 @@ class Login extends Component
             'form.password' => 'required',
         ]);
 
-
+            
 
         Auth::attempt($this->form);
         if(Auth::attempt($this->form) == false)
@@ -41,19 +41,31 @@ class Login extends Component
             ->where('id', '=', Auth::user()->id)
             ->value('db');
 
-
-        if(DB::table('users')->where('id','=',Auth::user()->id)->where('db','=','')->exists()){
-            return redirect('/sadmin');
+        $query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME =  ?";
+        $dbcheck = DB::select($query, [$bd]);
+        if(empty($dbcheck))
+        {
+            // ver se a base de dados existe ou não
+            DB::statement('create database ' .$bd);
+            trata();
+            return redirect('/unidades');
         }
         else
         {
-            $env = new DotenvEditor();
-            $env->changeEnv([
-                'DB_DATABASE2' => $bd,
-            ]);
+            if(DB::table('users')->where('id','=',Auth::user()->id)->where('db','=','')->exists()){
+                return redirect('/sadmin');
+            }
+            else
+            {
+                $env = new DotenvEditor();
+                $env->changeEnv([
+                    'DB_DATABASE2' => $bd,
+                ]);
 
-            return redirect('/unidades');
+                return redirect('/unidades');
+            }
         }
+
 
     }
 

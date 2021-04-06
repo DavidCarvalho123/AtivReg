@@ -10,22 +10,43 @@
             <form class="login100-form validate-form" wire:submit.prevent="submit">
 
                 <span class="login100-form-title p-b-26">
-                    Welcome
+                    Bem-vindo
                 </span>
                 <span class="login100-form-title p-b-48">
-                    <i class="zmdi zmdi-font"></i>
+                    <img style="width:80px;" src="{{ asset('img/logoAR.png') }}" alt="logo">
                 </span>
 
+                @if ($errors->any() == true)
+                    <div class="alert alert-danger" role="alert">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @if ($error == 'Faltam campos para preencher.')
+                                    <?php break; ?>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                @if ($erroNr != '')
+                <div class="alert alert-danger" role="alert">
+                    <ul>
+                        <li>{{ $erroNr }}</li>
+                    </ul>
+                </div>
+                @endif
                 <!-- Name -->
                 <div class="wrap-input100 validate-input">
-                    <input class="input100" type="text" name="name" id="name" wire:model="form.name" value="{{ old('name') }}" required>
-                    <span class="focus-input100" data-placeholder="Nome"></span>
+                    <input class="input100" type="text" name="name" id="name" placeholder="Nome" wire:model.defer="form.name">
+                    <span class="focus-input100"></span>
                 </div>
+
 
                 <!-- Email -->
                 <div class="wrap-input100 validate-input">
-                    <input class="input100" type="email" name="email" id="email" wire:model="form.email" value="{{ old('email') }}" required>
-                    <span class="focus-input100" data-placeholder="Email"></span>
+                    <input class="input100" type="email" name="email" id="email" placeholder="Email" wire:model.defer="form.email">
+                    <span class="focus-input100"></span>
                 </div>
 
 
@@ -34,9 +55,9 @@
                     <span class="btn-show-pass">
                         <i class="zmdi zmdi-eye"></i>
                     </span>
-                    <input class="input100" type="password" name="password" id="password" wire:model="form.password" required>
-                    <span class="focus-input100" data-placeholder="Password"></span>
-                    
+                    <input class="input100" type="password" name="password" id="password" placeholder="Password" wire:model.defer="form.password">
+                    <span class="focus-input100"></span>
+
                 </div>
 
                 <!-- Confirm Password -->
@@ -44,10 +65,23 @@
                     <span class="btn-show-pass">
                         <i class="zmdi zmdi-eye"></i>
                     </span>
-                    <input class="input100" type="password" name="password_confirmation" id="password-confirm" wire:model="form.password_confimation" required>
-                    <span class="focus-input100" data-placeholder="Password Confirmation"></span>
+                    <input class="input100" type="password" name="password_confirmation" id="password-confirm" placeholder="Confirmar Password" wire:model.defer="form.password_confimation">
+                    <span class="focus-input100"></span>
                 </div>
 
+            <hr>
+
+                <!-- DB -->
+                <div class="wrap-input100 validate-input">
+                    <input class="input100" type="text" name="DB" id="DB" placeholder="Nome da Organização" wire:model.defer="db">
+                    <span class="focus-input100"></span>
+                </div>
+
+                <!-- Nº Contribuinte -->
+                <div class="wrap-input100 validate-input">
+                    <input class="input100" type="text" name="Contribuinte" id="Contribuinte" placeholder="Nº Contribuinte" wire:model.defer="Ncontribuinte">
+                    <span class="focus-input100"></span>
+                </div>
 <br>
 
 
@@ -61,6 +95,11 @@
                     </div>
                 </div>
 
+                <div class="text-center p-t-15">
+                    <a class="txt1" href="/">
+                        Voltar à pagina principal
+                    </a>
+                </div>
 
             </form>
         </div>

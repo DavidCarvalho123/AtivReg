@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIntervencoesAnimadorasTable extends Migration
+class CreateUnidadesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateIntervencoesAnimadorasTable extends Migration
      */
     public function up()
     {
-        Schema::connection('mysql2')->create('intervencoes_animadoras', function (Blueprint $table) {
-            // id será string e com nomencultura as 3 primeiras letras, ou seja, id = ani1.
-            $table->string('id',7);
+        Schema::connection('mysql2')->create('unidades', function (Blueprint $table) {
+            $table->string('id',12);
             $table->primary('id');
-            $table->text('atividades');
+            $table->string('unidade',70);
+            $table->integer('nr_telefone')->length(9)->unsigned();
+            $table->string('email');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateIntervencoesAnimadorasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('intervencoes_animadoras');
+        Schema::dropIfExists('unidades');
     }
 }

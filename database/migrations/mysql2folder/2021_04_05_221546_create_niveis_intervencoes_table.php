@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTableablesTable extends Migration
+class CreateNiveisIntervencoesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateTableablesTable extends Migration
      */
     public function up()
     {
-        Schema::connection('mysql2')->create('tableables', function (Blueprint $table) {
+        Schema::connection('mysql2')->create('niveis_intervencoes', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('nivei_id')->unsigned();
-            $table->string('tableable_id',7);
-            $table->string('tableable_type');
-            $table->foreign('nivei_id')->references('id')->on('niveis')->onDelete('cascade');
+            $table->foreignId('niveis_id')->constrained();
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ class CreateTableablesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tableables');
+        Schema::dropIfExists('niveis_intervencoes');
     }
 }

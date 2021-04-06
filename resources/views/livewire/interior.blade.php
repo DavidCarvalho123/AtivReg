@@ -29,7 +29,7 @@
                                     </div>
                                 @endforeach
                             @else
-                                <div class="alert alert-warning"  role="alert"> {{ $aviso }}. </div>
+                                <div class="alert alert-warning"  role="alert"> {{ $aviso }} </div>
                             @endif
                         </div>
                     </div>
@@ -91,7 +91,7 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col">
-                                                <p class="description">{{ \Carbon\Carbon::parse($recente['created_at'])->diffForHumans(['parts' => 2, 'join' => true]) }}</p>
+                                                <p class="description"><?php date_default_timezone_set('Europe/Lisbon'); ?>{{ \Carbon\Carbon::parse($recente['created_at'])->diffForHumans(['parts' => 2, 'join' => true]) }}</p>
                                             </div>
                                             <div class="col-4">
                                                 @if (array_key_exists('cliente_id',$recente))
@@ -99,7 +99,7 @@
                                                 @else
                                                     <?php $indi = 0; ?>
                                                 @endif
-                                                <div wire:click="Clone('{{ $recente['id'] }}', {{ $indi }})" class="button-container" style="padding-right: 5px;margin-bottom: 5px;">
+                                                <div wire:click="Clone('{{ $recente['id'] }}', {{ $indi }},'0')" class="button-container" style="padding-right: 5px;margin-bottom: 5px;">
                                                     <button style="padding-left: 8px;padding-right: 8px;" class="btn btn-warning btn-fill pull-right" type="submit">
                                                         <i class="nc-icon nc-single-copy-04" style="position: relative;top: 2px;"></i>
                                                         Clonar
@@ -142,7 +142,12 @@
                 <div class="col-lg-5">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Inserir um registo</h4>
+                            @if ($edit == 1)
+                                <h4 class="card-title">Atualizar um registo</h4>
+                            @else
+                                <h4 class="card-title">Inserir um registo</h4>
+                                <?php $idselecionado = '' ?>
+                            @endif
                         </div>
                         <div class="card-body">
                             <?php $contaclass = 1; ?>
@@ -249,7 +254,7 @@
                                     </div>
                                 @endif
                                     <button wire:loading.attr="disabled" wire:target="fotos" class="btn btn-info btn-fill pull-right" type="submit">
-                                        <i class="nc-icon nc-send" style="position: relative;top: 2px;"></i>
+                                        <i class="nc-icon nc-send" style="position: relative; top: 2px;"></i>
                                         Submeter
                                     </button>
                                     <div wire:loading wire:target="fotos" style="color: #4489d8; margin-right:10px;top: 3px;" class="la-ball-clip-rotate pull-right">
@@ -370,7 +375,7 @@
                                     <div class="card" >
                                         @if ($gruposcolaborador->count() > 0)
                                             <div class="card-header">
-                                                <h4 class="card-title">Escolha um dos seus grupos para evetuar um registo</h4>
+                                                <h4 class="card-title">Escolha um dos seus grupos para efetuar um registo</h4>
                                                 <hr style="margin-bottom: 0px;">
                                             </div>
                                             <div class="card-body" style="padding-top: 0px;">
@@ -407,7 +412,7 @@
                                                     </div>
                                         @endif
                                         <div class="card-header">
-                                            <h4 class="card-title">Escolha os clientes para evetuar um registo</h4>
+                                            <h4 class="card-title">Escolha os clientes para efetuar um registo</h4>
                                             <hr style="margin-bottom: 0px;">
                                         </div>
                                         <div class="card-body" style="padding-top: 0px;">
@@ -500,6 +505,12 @@
                     '</script>';
                 $this->emit('refreshJS');
             }
+            if ($javas == 7) {
+                echo '<script type="text/javascript">',
+                    'showNotificationUpReg("bottom","right");',
+                    '</script>';
+                $this->emit('refreshJS');
+            }
         ?>
 
 
@@ -507,17 +518,77 @@
     </div>
     <!-- END -->
 @elseif($show == 3)
-<div>
 
+
+
+<div>
+    <div class="container-fluid" style="padding-left: 0px;">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Todos os ficheiros de {{ $titulo }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="container">
+                    <div class="row">
+                        @if($aviso == '')
+                            @foreach ($objectos as $objecto)
+                                <div class="col-4" style="padding-left: 0px">
+                                    <div class="card" style="width: 19rem;">
+                                        <img src="{{ asset('storage/'.$this->origem.'/ficheiros/'.$objecto->link) }}" class="card-img-top" alt="{{ $objecto->nome_ficheiro }}">
+                                        <div class="card-body">
+                                            <h4 class="card-title">{{ $objecto->nome_ficheiro }}</h4>
+                                            <p class="card-text">{{ $objecto->descricao_ficheiro }}</p>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-6"><a href="#" class="btn btn-primary">Transferir</a></div>
+                                                    <div class="col-6" style="display: flex;justify-content: center;"><a href="#" class="btn btn-success">Abrir</a></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="alert alert-warning"  role="alert"> {{ $aviso }}. </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+
+
+
 @elseif($show == 2)
     <div>
+        <div wire:ignore class="modal fade modal-mini modal-primary" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-height: 100px;max-width:500px">
+                <div class="modal-content">
+                    <div class="modal-header justify-content-center">
+                        <div class="modal-profile">
+                            <i class="nc-icon nc-simple-remove"></i>
+                        </div>
+                    </div>
+                    <div class="modal-body text-center">
+                        <p>Tem a certeza que deseja eliminar este registo?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnDismiss3" class="btn btn-info btn-fill" data-dismiss="modal">Não</button>
+                        <button wire:click="RemoveRegisto" class="btn btn-danger btn-fill">Sim</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
         <div class="col-md-12">
             <div class="card table-plain-bg">
                 <div class="card-header">
                     <h4 class="card-title">Todos os seus registos</h4>
                 </div>
-                <div class="card-body table-full-width table-responsive">
+                <div class="card-body table-full-width table-responsive" style="margin-left: 0px;">
                     <table class="table table-hover">
                         <thead>
                             <tr>
@@ -532,41 +603,94 @@
                                 <th>Data realizada</th>
                                 <th>Hora iniciada</th>
                                 <th>Hora terminada</th>
-                                <th>Clientes</th>
-                                <th>Criado a</th>
+                                <th style="width:200px;">Clientes</th>
+                                <th>Criado às</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $it = 0; $ic = 0;?>
-                            @foreach ($allclients as $registo)
+                            <?php $it = 0; $ic = 0;
+                            function record_sort($records, $field, $reverse=false)
+                            {
+                                $hash = array();
+
+                                foreach($records as $record)
+                                {
+                                    $hash[$record[$field]] = $record;
+                                }
+
+                                ($reverse)? krsort($hash) : ksort($hash);
+
+                                $records = array();
+
+                                foreach($hash as $record)
+                                {
+                                    $records []= $record;
+                                }
+
+                                return $records;
+                            }
+
+                            $allclients = record_sort($allclients,"infoable_id");?>
+                            @foreach ($allclients as $registo2)
                             <tr>
-                                <td>
-                                    @foreach ($registo as $a)
-                                        @if ($a['Type'] == 'text')
-                                            {{ $vartext[$it] }}
-                                            <?php $it++; ?>
-                                            @endif
-                                        @if ($a['Type'] == 'tinyint(4)')
-                                            {{ $varchoose[$ic] }}
-                                            <?php $ic++; ?>
-                                            @endif
-                                    @endforeach
-                                </td>
+                                @foreach ($registo as $a)
 
-                                    <td>
-                                        {{ $registo['data_realizada'] }}
+                                    @if ($a['Type'] == 'text')
+                                    <td class="text-center">
+                                        {{ $vartext2[$it] }}
+                                        <?php $it++; ?>
                                     </td>
-                                    <td>
-                                        {{ $registo['hora_iniciada'] }}
+                                    @endif
+                                    @if ($a['Type'] == 'tinyint(4)')
+                                    <td class="text-center">
+                                        {{ $varchoose2[$ic] }}
+                                        <?php $ic++; ?>
                                     </td>
-                                    <td>
-                                        {{ $registo['hora_terminada'] }}
-                                    </td>
-                                    <td>
+                                    @endif
 
+                                @endforeach
+                                    <td>
+                                        {{ $registo2['data_realizada'] }}
+                                    </td>
+                                    <td class="text-center">
+                                        @if ($registo2['hora_iniciada'] == '')
+                                            --:--
+                                        @else
+                                            {{ $registo2['hora_iniciada'] }}
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        @if ($registo2['hora_terminada'] == '')
+                                            --:--
+                                        @else
+                                            {{ $registo2['hora_terminada'] }}
+                                        @endif
                                     </td>
                                     <td>
-                                        {{ $registo['created_at'] }}
+                                        <!-- Clientes -->
+                                        @if (array_key_exists('cliente_id',$registo2))
+                                            <?php $d = $clientesrecentes->where('id', $registo2['cliente_id'])->first();$indi = 1;?>
+                                            {{ $d->nome.' '.$d->apelido }}
+                                        @else
+                                        <?php $indi = 0?>
+                                        @foreach ($interrecentes as $rec)
+                                            @if ($rec->id == $registo2['id'])
+                                                <?php $e = $rec->Clientes()->get() ?>
+                                                @foreach ($e as $f)
+                                                    {{ $f->nome.' '.$f->apelido }},
+                                                @endforeach
+                                            @endif
+                                        @endforeach
+                                        @endif
+                                    </td>
+                                    <td>
+                                        {{ $registo2['created_at'] }}
+                                    </td>
+                                    <td>
+                                        <button wire:click="Clone({{ $registo2['id'] }},{{ $indi }},'1')" class="btn btn-md btn-fill btn-warning">Editar</button>
+                                    </td>
+                                    <td style="display: table-cell;">
+                                        <button wire:click="getremoveregisto({{ $registo2['id'] }},{{ $indi }})" data-toggle="modal" data-target="#myModal3" class="btn btn-md btn-fill btn-danger">Eliminar</button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -575,6 +699,616 @@
                 </div>
             </div>
         </div>
+        <?php if ($javas == 6) {
+            echo '<script type="text/javascript">',
+                'showNotificationRemReg("bottom","right");',
+                '</script>';
+            $this->emit('refreshJS');
+        }?>
+    </div>
+
+@elseif($show == 4)
+    <div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            @if ($edit == 1)
+                                <h4 class="card-title">Atualizar uma unidade</h4>
+                            @else
+                                <h4 class="card-title">Criar uma unidade</h4>
+                            @endif
+
+                        </div>
+                        <div class="card-body">
+                            <form wire:submit.prevent="unicreate">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="sigla">Sigla de identificação</label>
+                                            <input wire:model.defer="sigla" type="text" class="form-control" id="sigla"
+                                            @if ($fechar != '')
+                                                {{ $fechar }}
+                                            @else
+                                                required
+                                            @endif
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="nomeuni">Nome da unidade</label>
+                                            <input wire:model.defer="uninome" type="text" class="form-control" id="nomeuni" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="nrtelemovel">Nº de telefone/telemóvel</label>
+                                            <input wire:model.defer="nrtelemovel" type="text" class="form-control" id="nrtelemovel" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="emailuni">Email da unidade</label>
+                                            <input wire:model.defer="uniemail" type="email" class="form-control" id="emailuni" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                @if ($errouni != '')
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $errouni }}
+                                    </div>
+                                @endif
+                                <button class="btn btn-info btn-fill pull-right" type="submit">
+                                    <i class="nc-icon nc-send" style="position: relative;top: 2px;"></i>
+                                    Submeter
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if ($todasunidades->count() > 0)
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card table-plain-bg">
+                            <div class="card-header">
+                                <h4 class="card-title">Todas as unidades criadas</h4>
+                            </div>
+                            <div class="card-body table-full-width table-responsive" style="margin-left: 0px;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Sigla</th>
+                                            <th>Nome da unidade</th>
+                                            <th>Nº de telemóvel</th>
+                                            <th>Email</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($todasunidades as $unidade)
+                                        <tr>
+                                            <td>
+                                                {{ $unidade->id }}
+                                            </td>
+                                            <td>
+                                                {{ $unidade->unidade }}
+                                            </td>
+                                            <td>
+                                                {{ $unidade->nr_telefone }}
+                                            </td>
+                                            <td>
+                                                {{ $unidade->email }}
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <button wire:click="Cloneuni('{{ $unidade->id }}')" class="btn btn-md btn-fill btn-warning">Editar</button>
+                                            </td>
+                                            <td style="text-align: center;display: table-cell;">
+                                                <button wire:click="removeunidade('{{ $unidade->id }}')" class="btn btn-md btn-fill btn-danger">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+        <?php if ($javas == 11)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationUnidade("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        if ($javas == 12)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationRemNoUnidade("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        if ($javas == 13)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationRemUnidade("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        if ($javas == 14)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationUpUnidade("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        ?>
+    </div>
+
+@elseif($show == 5)
+    <div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Criar um cargo</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form wire:submit.prevent="nivelsubmit">
+                                        <div class="form-group">
+                                            <label for="cargo">Cargo</label>
+                                            <input class="form-control" type="text" id="cargo" wire:model="cargo" required>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input id="check1" class="form-check-input" type="checkbox" wire:model="podecli">
+                                                        <span class="form-check-sign"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-10" style="padding-top: 9px;">
+                                                <label for="check1">Pode criar clientes?</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input id="check2" class="form-check-input" type="checkbox" wire:model="podefich">
+                                                        <span class="form-check-sign"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-10" style="padding-top: 9px;">
+                                                <label for="check2">Pode introduzir ficheiros na página principal?</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input id="check3" class="form-check-input" type="checkbox" wire:model="podefamil">
+                                                        <span class="form-check-sign"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-10">
+                                                <label for="check3">Pode criar contas de familiares?</label>
+                                            </div>
+                                        </div>
+
+                                        <hr>
+
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input id="check4" class="form-check-input" type="checkbox" wire:model="check4">
+                                                        <span class="form-check-sign"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-10">
+                                                <label for="check4">Vai efetuar registos sobre clientes?</label>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        @if ($check4 == true)
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <label for="">Quantos campos de texto?</label>
+                                                        <input class="form-control" type="number" min="0" wire:model="texto">
+                                                    </div>
+                                                    @for ($i = 1;$i <= $texto; $i++)
+                                                        <div class="form-group">
+                                                            <label>Nome do campo</label>
+                                                            <input class="form-control" type="text" min="0" wire:model="textarray.{{ $i }}">
+                                                        </div>
+                                                    @endfor
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <label for="choose">Quantos campos de escolha múltipla?</label>
+                                                        <input class="form-control" type="number" min="0" id="choose" wire:model="escolha">
+                                                    </div>
+                                                    @for ($i = 1;$i <= $escolha; $i++)
+                                                        <div class="form-group">
+                                                            <label>Nome do campo</label>
+                                                            <input class="form-control" type="text" min="0" wire:model="escolharray.{{ $i }}">
+                                                        </div>
+                                                    @endfor
+                                                </div>
+
+                                            </div>
+
+                                        @endif
+                                        @if ($erronivel != '')
+                                            <div class="alert alert-danger" role="alert">
+                                                {{ $erronivel }}
+                                            </div>
+                                        @endif
+                                        <button class="btn btn-info btn-fill pull-right" type="submit">
+                                            <i class="nc-icon nc-send" style="position: relative;top: 2px;"></i>
+                                            Submeter
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Todos os cargos criados</h4>
+                                </div>
+                                <div class="card-body table-full-width table-responsive" style="margin-left: 0px;">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Cargo</th>
+                                                <th>Pode criar clientes?</th>
+                                                <th>Pode introduzir ficheiros na página principal?</th>
+                                                <th>Pode criar contas de familiares?</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($todosniveis as $nivel)
+                                            <tr>
+                                                <td>
+                                                    {{ $nivel->nivel }}
+                                                </td>
+                                                <td class="text-center">
+                                                    @if ($nivel->clientes == 0)
+                                                        Não
+                                                    @else
+                                                        Sim
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if ($nivel->ficheiros == 0)
+                                                        Não
+                                                    @else
+                                                        Sim
+                                                    @endif
+                                                </td>
+                                                <td class="text-center" style="display:table-cell;">
+                                                    @if ($nivel->familiares == 0)
+                                                        Não
+                                                    @else
+                                                        Sim
+                                                    @endif
+                                                </td>
+                                                @if ($nivel->nivel == 'Admin')
+                                                @else
+                                                <td style="text-align: center;display: table-cell;">
+                                                    <button wire:click="RemoveCargos({{ $nivel->id }})" class="btn btn-md btn-fill btn-danger">Eliminar</button>
+                                                </td>
+                                                @endif
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <?php if ($javas == 23)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationNewNivel("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        if ($javas == 24)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationRemNivelErro("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        if ($javas == 25)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationRemNivel("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        ?>
+    </div>
+
+@elseif($show == 6)
+    <div>
+        <div wire:ignore class="modal fade modal-mini modal-primary" id="myModal5" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-height: 100px;max-width:500px">
+                <div class="modal-content">
+                    <div class="modal-header justify-content-center">
+                        <div class="modal-profile">
+                            <i class="nc-icon nc-simple-remove"></i>
+                        </div>
+                    </div>
+                    <div class="modal-body text-center">
+                        <p>Tem a certeza que deseja eliminar esta conta de colaborador?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnDismiss5" class="btn btn-info btn-fill" data-dismiss="modal">Não</button>
+                        <button wire:click="colabremove" class="btn btn-danger btn-fill">Sim</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            @if ($edit == 1)
+                                <h4 class="card-title">Atualizar uma conta de colaborador</h4>
+                            @else
+                                <h4 class="card-title">Criar uma conta de colaborador</h4>
+                            @endif
+                        </div>
+                        <div class="card-body">
+                            <form wire:submit.prevent="colabsubmit">
+                                <div class="form-group">
+                                    <label for="emailcolab">Email do colaborador</label>
+                                    <input class="form-control" type="email" id="emailcolab" wire:model.defer="emailcolab" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="nomecolab">Nome</label>
+                                            <input class="form-control" type="text" id="nomecolab" wire:model.defer="nomecolab" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="apelido">Apelido</label>
+                                            <input class="form-control" type="text" id="apelido" wire:model.defer="apelidocolab" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="passtemp">Password temporária</label>
+                                    <input class="form-control" type="text" id="passtemp" wire:model.defer="passtemp" required
+                                    @if ($edit == 1)
+                                        disabled
+                                    @endif
+                                    >
+                                </div>
+                                <?php $conta2 = 1; ?>
+                                <div class="row">
+
+                                    <div class="col-5">
+                                        <div class="form-group">
+                                            <label for="cargocolab">Cargo</label>
+                                            <select class="form-control" id="cargocolab" wire:model.defer="cargocolab"
+                                            @if ($edit == 1)
+                                                disabled
+                                            @endif>
+                                            @if ($edit == 1)
+                                                <option value="">{{ $cargocolab2->nivel }}</option>
+                                            @else
+                                                @foreach ($todosniveis as $n)
+                                                    <option value="{{ $n->id }}">{{ $n->nivel }}</option>
+                                                @endforeach
+                                            @endif
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-7">
+                                        <div class="form-group">
+                                            <label for="unidadecolab"><div class="row"><div class="col-3.5">Unidades</div><div class="col-8.5" style="padding-left: 0px;"><h6 style="top: 2px;position: relative;">(CTRL+Click para escolher vários)</h6></div></div></label>
+                                            <select class="form-control" id="unidadecolab" wire:model.defer="unidadecolab" multiple>
+                                                @foreach ($todosuni as $n)
+                                                    <option value="{{ $n->id }}"
+                                                        @if ($edit == 1)
+                                                            @if ($paraeditar->unidades->contains($n->id))
+                                                                selected
+                                                            @endif
+                                                        @endif
+                                                    >{{ $n->unidade }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                @if ($errocolab != '')
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $errocolab }}
+                                    </div>
+                                @endif
+                                <button class="btn btn-info btn-fill pull-right" type="submit">
+                                    <i class="nc-icon nc-send" style="position: relative;top: 2px;"></i>
+                                    Submeter
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Todos as contas de colaboradores</h4>
+                        </div>
+                        <div class="card-body table-full-width table-responsive" style="margin-left: 0px;">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Cargo</th>
+                                        <th>Unidade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($todoscolabs as $colab)
+                                    <tr>
+                                        <td>
+                                            {{ $colab->nome.' '.$colab->apelido }}
+                                        </td>
+                                        <td>
+                                            {{ $colab->email }}
+                                        </td>
+                                        <td>
+                                            {{ $colab->Niveis->nivel }}
+                                        </td>
+                                        <td style="display:table-cell;">
+                                            @foreach ($colab->unidades as $uni)
+                                                {{ $uni->unidade }}
+                                            @endforeach
+                                        </td>
+                                        @if ($colab->email == Auth::user()->email)
+                                        @else
+                                            <td style="text-align: center;">
+                                                <button wire:click="clonecolab({{ $colab->id }})" class="btn btn-md btn-fill btn-warning">Editar</button>
+                                            </td>
+                                            <td style="text-align: center;display: table-cell;">
+                                                <button wire:click="colabremoveget({{ $colab->id }})" data-toggle="modal" data-target="#myModal5" class="btn btn-md btn-fill btn-danger">Eliminar</button>
+                                            </td>
+                                        @endif
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php if ($javas == 21)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationColab("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        if ($javas == 22)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationRemColab("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        ?>
+    </div>
+@elseif($show == 7)
+    <div>
+
+    </div>
+@elseif($show == 8)
+    <div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Introduzir um ficheiro</h4>
+                        </div>
+                        <div class="card-body">
+                            <form wire:submit.prevent="submitfich">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="fileUpload2">Ficheiro</label>
+                                            <div class="form-control" style="padding-top: 5px;">
+                                                <div class="row">
+                                                    <div class="col-11" style="padding-top: 0px;">
+                                                        <input wire:model="ficheiros" style="height:auto" type="file" id="fileUpload2" required>
+                                                    </div>
+                                                    @if ($ficheiros != '')
+                                                        <div class="col-1" wire:click="cleanfiles2">
+                                                            <i class="nc-icon nc-icon nc-simple-remove"></i>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="nomefich">Nome do ficheiro</label>
+                                            <input class="form-control" type="text" id="nomefich" wire:model.defer="nomefich" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="descfich">Descrição do ficheiro</label>
+                                            <input class="form-control" type="text" id="descfich" wire:model.defer="descfich" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="unifich">Unidade</label>
+                                            <select class="form-control" id="unifich" wire:model.defer="unifich">
+                                                @foreach ($todosuni as $n)
+                                                    <option value="{{ $n->id }}">{{ $n->unidade }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                @if ($errofich != '')
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $errofich }}
+                                    </div>
+                                @endif
+                                <button wire:loading.attr="disabled" wire:target="ficheiros" class="btn btn-info btn-fill pull-right" type="submit">
+                                    <i class="nc-icon nc-send" style="position: relative;top: 2px;"></i>
+                                    Submeter
+                                </button>
+                                <div wire:loading wire:target="ficheiros" style="color: #4489d8; margin-right:10px;top: 3px;" class="la-ball-clip-rotate pull-right">
+                                    <div></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div>
+    </div>
+@elseif($show == 9)
+    <div>
+
     </div>
 @endif
 

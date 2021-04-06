@@ -5,10 +5,10 @@
                 <form class="login100-form validate-form" wire:submit.prevent="submit">
 
                     <span class="login100-form-title p-b-26">
-                        Welcome
+                        Bem-vindo
                     </span>
                     <span class="login100-form-title p-b-48">
-                        <i class="zmdi zmdi-font"></i>
+                        <img style="width:80px;" src="{{ asset('img/logoAR.png') }}" alt="logo">
                     </span>
 
                     @if ($errors->any() == true)
@@ -72,15 +72,12 @@
                     </div>
 
 
-                    <div class="text-center p-t-30">
-                        <span class="txt1">
-                            Don’t have an account?
-                        </span>
-
-                        <a class="txt2" href="/Register">
-                            Sign Up
+                    <div class="text-center p-t-15">
+						<a class="txt1" href="/">
+							Voltar à pagina principal
                         </a>
-                    </div>
+					</div>
+
                 </form>
             </div>
         </div>

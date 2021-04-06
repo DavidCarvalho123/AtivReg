@@ -33,22 +33,71 @@
 
 
                 <ul class="nav" id="myDIV">
-                    <li class="nav-item active" wire:click="PaginaPrincipal">
-                        <a class="nav-link" href="#" onclick="event.preventDefault();" >
-                            <i class="nc-icon nc-icon nc-paper-2"></i>
-                            <p>Página Principal</p>
-                        </a>
-                    </li>
-                    @foreach ($titulos as $titulo)
-                        <br style="margin-top: 10px;">
-                        <li class="nav-item" wire:click="ViewNiveis('{{ $titulo }}')">
+                    @if ($admin == 0)
+                        <li class="nav-item {{ $pagpri }}" wire:click="PaginaPrincipal">
                             <a class="nav-link" href="#" onclick="event.preventDefault();" >
-                                <i class="nc-icon nc-icon nc-notes"></i>
-                                <p>{{ $titulo }}</p>
+                                <i class="nc-icon nc-icon nc-paper-2"></i>
+                                <p>Página Principal</p>
                             </a>
                         </li>
-                    @endforeach
-
+                        @foreach ($titulos as $titulo)
+                            <br style="margin-top: 10px;">
+                            <li class="nav-item {{ $viewnivel }}" wire:click="ViewNiveis('{{ $titulo }}')">
+                                <a class="nav-link" href="#" onclick="event.preventDefault();" >
+                                    <i class="nc-icon nc-icon nc-notes"></i>
+                                    <p>{{ $titulo }}</p>
+                                </a>
+                            </li>
+                        @endforeach
+                    @else
+                        <li class="nav-item {{ $uni }}" wire:click="ClickUnidades">
+                            <a class="nav-link" href="#" onclick="event.preventDefault();" >
+                                <i class="nc-icon nc-icon nc-app"></i>
+                                <p>Unidades</p>
+                            </a>
+                        </li>
+                        <br style="margin-top: 10px;">
+                        <li class="nav-item {{ $nive }}" wire:click="ClickNiveis">
+                            <a class="nav-link" href="#" onclick="event.preventDefault();" >
+                                <i class="nc-icon nc-icon nc-paper-2"></i>
+                                <p>Cargos</p>
+                            </a>
+                        </li>
+                        <br style="margin-top: 10px;">
+                        <li class="nav-item {{ $colab }}" wire:click="ClickColab">
+                            <a class="nav-link" href="#" onclick="event.preventDefault();" >
+                                <i class="nc-icon nc-icon nc-badge"></i>
+                                <p>Colaboradores</p>
+                            </a>
+                        </li>
+                    @endif
+                    @if ($other2 == 1)
+                        <br style="margin-top: 10px;">
+                        <li class="nav-item {{ $otherclick2 }}" wire:click="Clickother2">
+                            <a class="nav-link" href="#" onclick="event.preventDefault();" >
+                                <i class="nc-icon nc-icon nc-single-copy-04"></i>
+                                <p>Ficheiros</p>
+                            </a>
+                        </li>
+                    @endif
+                    @if ($other3 == 1)
+                        <br style="margin-top: 10px;">
+                        <li class="nav-item {{ $otherclick3 }}" wire:click="Clickother3">
+                            <a class="nav-link" href="#" onclick="event.preventDefault();" >
+                                <i class="nc-icon nc-icon nc-circle-09"></i>
+                                <p>Familiares</p>
+                            </a>
+                        </li>
+                    @endif
+                    @if ($other1 == 1)
+                        <br style="margin-top: 10px;">
+                        <li class="nav-item {{ $otherclick1 }}" wire:click="Clickother1">
+                            <a class="nav-link" href="#" onclick="event.preventDefault();" >
+                                <i class="nc-icon nc-icon nc-badge"></i>
+                                <p>Clientes</p>
+                            </a>
+                        </li>
+                    @endif
 
 
                 <!--
@@ -65,20 +114,7 @@
 
         </div>
     </div>
-    <script>
-        var header = document.getElementById("myDIV");
-        var btns = header.getElementsByClassName("nav-item");
-        var element = document.querySelector('.active');
-        for (var i = 0; i < btns.length; i++)
-        {
-            btns[i].addEventListener("click", function()
-            {
-                var current = document.getElementsByClassName("active");
-                current[0].className = current[0].className.replace(" active", "");
-                this.className += " active";
-            });
-        }
-    </script>
+
 
     <div class="main-panel">
         @livewire('navbar', ['unidade' => $unidade])

@@ -10,7 +10,7 @@ class intervencoesindividuai extends Model
     use HasFactory;
     protected $connection = "mysql2";
     protected $fillable=[
-        'data_realizada', 'hora_iniciada', 'hora_terminada', 'info_id', 'cliente_id','colaborador_id'
+        'data_realizada', 'hora_iniciada', 'hora_terminada', 'cliente_id','colaborador_id'
     ];
 
     protected $guarded = [];
@@ -30,17 +30,15 @@ class intervencoesindividuai extends Model
         return $this->belongsTo('App\Models\Cliente');
     }
 
-
-
     public function colaboradores()
     {
         return $this->belongsTo('App\Models\Colaboradore');
     }
 
-
-    public function infoable()
+    public function intervencoes_entidades()
     {
-        return $this->morphTo();
+        return $this->hasMany('App\Models\intervencoes_entidades');
     }
+
 
 }

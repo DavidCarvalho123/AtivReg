@@ -41,13 +41,27 @@ class AuthServiceProvider extends ServiceProvider
                 return false;
             }
         });
+        // Gate para admin
+        Gate::define('admin-only', function (User $user)
+        {
+            $colaboradores = Colaboradore::where('email', '=', Auth::user()->email)->first();
+
+            if($colaboradores->unidades->count() < 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        });
 
         // Gate para multi unidades
         Gate::define('multiuni-only', function (User $user)
         {
             $colaboradores = Colaboradore::where('email', '=', Auth::user()->email)->first();
 
-            if($colaboradores->unidades->count() == 1 )
+            if($colaboradores->unidades->count() <= 1 )
             {
                 return false;
             }

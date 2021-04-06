@@ -10,7 +10,7 @@ class Nivei extends Model
     use HasFactory;
     protected $connection = "mysql2";
     protected $fillable=[
-        'nivel'
+        'nivel',
     ];
 
     public function colaboradores()
@@ -18,20 +18,10 @@ class Nivei extends Model
         return $this->hasMany('App\Models\Colaboradore');
     }
 
-    public function intervencoes_animadora()
+    public function niveis_intervencoes()
     {
-        return $this->morphedByMany(intervencoes_animadora::class, 'tableable');
+        return $this->hasMany('App\Models\niveis_intervencoes');
     }
-    public function intervencoes_enfermeira()
-    {
-        return $this->morphedByMany(intervencoes_enfermeira::class, 'tableable');
-    }
-    public function intervencoes_gestorcliente()
-    {
-        return $this->morphedByMany(intervencoes_gestorcliente::class, 'tableable');
-    }
-    public function intervencoes_psicologo()
-    {
-        return $this->morphedByMany(intervencoes_psicologo::class, 'tableable');
-    }
+
+
 }

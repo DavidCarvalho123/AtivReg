@@ -10,7 +10,7 @@ class intervencoesgrupo extends Model
     use HasFactory;
     protected $connection = "mysql2";
     protected $fillable=[
-        'data_realizada','hora_iniciada','hora_terminada','info_id','colaborador_id'
+        'data_realizada','hora_iniciada','hora_terminada','colaborador_id'
     ];
 
     protected $casts=[
@@ -33,9 +33,9 @@ class intervencoesgrupo extends Model
         return $this->belongsTo('App\Models\Colaboradore');
     }
 
-    public function infoable()
+    public function intervencoes_entidades()
     {
-        return $this->morphTo();
+        return $this->hasMany('App\Models\intervencoes_entidades');
     }
 
 }

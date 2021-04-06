@@ -56,7 +56,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
     <script type="text/javascript">
 
-        
+
 
         function showNotification(from, align)
         {
@@ -66,6 +66,176 @@
             $.notify({
                 icon: "nc-icon nc-bulb-63",
                 message: "Registo criado com sucesso."
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+        function showNotificationRemNoUnidade(from, align)
+        {
+
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "Erro. Esta unidade já está relacionada com um outro campo"
+
+            },{
+                type: 'danger',
+                timer: 500,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationRemUnidade(from, align)
+        {
+
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "A unidade foi eliminada com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationUpUnidade(from, align)
+        {
+
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "A unidade foi editada com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationColab(from, align)
+        {
+
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "O colaborador foi criado com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationRemColab(from, align)
+        {
+            $('#btnDismiss5').click();
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "O colaborador foi eliminado com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationNewNivel(from, align)
+        {
+
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "O cargo foi criado com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationRemNivelErro(from, align)
+        {
+
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "Erro. Este cargo já está relacionado com um outro campo"
+
+            },{
+                type: 'danger',
+                timer: 500,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationRemNivel(from, align)
+        {
+
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "O cargo foi eliminado com sucesso."
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationUnidade(from, align)
+        {
+
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "Unidade criada com sucesso."
 
             },{
                 type: 'primary',
@@ -153,8 +323,50 @@
             });
         }
 
+        function showNotificationRemReg(from, align)
+        {
+            $('#btnDismiss3').click();
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "O registo foi eliminado com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationUpReg(from, align)
+        {
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "O registo foi atualizado com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
         window.addEventListener('cleanfiles', event => {
             var file = document.getElementById("fileUpload");
+            file.value = file.defaultValue;
+        });
+
+        window.addEventListener('cleanfiles2', event => {
+            var file = document.getElementById("fileUpload2");
             file.value = file.defaultValue;
         });
 

@@ -4852,21 +4852,26 @@ input[type=file]::file-selector-button {
         margin-left: -15px;
         margin-right: -15px;
     }
-    .table-responsive {
+    .table-responsive{
         overflow: visible;
     }
 }
 
-@media (max-width: 991px) {
-    .table-responsive {
-        width: 100%;
-        margin-bottom: 15px;
+@media (max-width: 991px){
+    .table-responsive{
         overflow-x: scroll;
-        overflow-y: hidden;
-        -ms-overflow-style: -ms-autohiding-scrollbar;
-        -webkit-overflow-scrolling: touch;
     }
 }
+
+.table-responsive {
+
+    margin-bottom: 15px;
+
+    overflow-y: hidden;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    -webkit-overflow-scrolling: touch;
+}
+
 
 .bootstrap-switch {
     display: inline-block;

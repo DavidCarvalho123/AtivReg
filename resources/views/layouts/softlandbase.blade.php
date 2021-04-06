@@ -34,7 +34,6 @@
     </head>
 
     <body>
-
         @include('softlandparts.navs')
 
         @yield('content')

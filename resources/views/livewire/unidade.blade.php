@@ -7,7 +7,7 @@
                         Escolha a unidade para entrar
                     </span>
                     <span class="login100-form-title p-b-48" style="padding-bottom: 20px;">
-                        <i class="zmdi zmdi-font"></i>
+                        <img style="width:80px;" src="{{ asset('img/logoAR.png') }}" alt="logo">
                     </span>
 
                     @if ($errors->any() == true)
@@ -38,6 +38,12 @@
                             </button>
                         </div>
                     </div>
+
+                    <div class="text-center p-t-15">
+						<a class="txt1" href="/">
+							Voltar à pagina principal
+                        </a>
+					</div>
 
                 </form>
             </div>

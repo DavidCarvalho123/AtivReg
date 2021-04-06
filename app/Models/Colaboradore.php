@@ -14,6 +14,7 @@ class Colaboradore extends Model
         'nome',
         'apelido',
         'niveis_id',
+        'IsDeleted',
     ];
 
     public function Niveis()
