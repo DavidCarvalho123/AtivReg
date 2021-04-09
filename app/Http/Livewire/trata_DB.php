@@ -8,23 +8,31 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-function trata()
+if(!function_exists('criardb'))
 {
-    Artisan::call('migrate',
-                    array(
-                    '--path' => 'database/migrations/mysql2folder',
-                    '--database' => 'mysql2',
-                    '--force' => true));
-    Nivei::create([
+    function criardb()
+    {
+        Artisan::call('migrate',
+        array(
+        '--path' => 'database/migrations/mysql2folder',
+        '--database' => 'mysql2',
+        '--force' => true));
+
+        Nivei::create([
         'nivel' => 'Admin',
         'clientes' => 0,
         'ficheiros' => 0,
         'familiares' => 0,
-    ]);
-    Colaboradore::create([
+        ]);
+        
+        Colaboradore::create([
         'email' => Auth::user()->email,
         'nome' => Auth::user()->name,
         'niveis_id' => 1,
         'IsDeleted' => 0,
-    ]);
+        ]);
+    }
 }
+
+
+

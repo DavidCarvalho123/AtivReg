@@ -72,11 +72,15 @@ Route::group(['middleware' => 'guest'],function(){
     return view('auth.baselogin');
     })->name('Login')->where(['url1' => 'login|Login']);
 
-    Route::get('/Register', function(){
+    Route::get('/{url2}', function($url2){
         return view('auth.baseregister');
-    });
+    })->name('Registar')->where(['url2' => 'registar|Registar']);
 });
 Route::get('/logout',App\Http\Livewire\Logout::class)->middleware('auth');
+
+Route::get('/mudarpasse', function(){
+    return view('auth.basemudar');
+});
 
 Auth::routes();
 

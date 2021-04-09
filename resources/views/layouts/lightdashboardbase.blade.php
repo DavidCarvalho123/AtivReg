@@ -360,6 +360,150 @@
             });
         }
 
+        function showNotificationFich(from, align)
+        {
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "O ficheiro foi submetido com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationRemFich(from, align)
+        {
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "O ficheiro foi eliminado com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationFamil(from, align)
+        {
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "O familiar foi criado com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationRemFamil(from, align)
+        {
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "O familiar foi eliminado com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationUpFamil(from, align)
+        {
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "O familiar foi editado com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationCli(from, align)
+        {
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "O cliente foi criado com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationRemCli(from, align)
+        {
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "O cliente foi eliminado com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
+        function showNotificationChangedPass(from, align)
+        {
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "A senha foi atualizada com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
         window.addEventListener('cleanfiles', event => {
             var file = document.getElementById("fileUpload");
             file.value = file.defaultValue;
@@ -367,6 +511,11 @@
 
         window.addEventListener('cleanfiles2', event => {
             var file = document.getElementById("fileUpload2");
+            file.value = file.defaultValue;
+        });
+
+        window.addEventListener('cleanfiles3', event => {
+            var file = document.getElementById("fileUpload3");
             file.value = file.defaultValue;
         });
 

@@ -18,21 +18,28 @@ class Login extends Component
         'password' => '',
     ];
     public $counter = 0;
-    public function submit()
+    public function submit1()
     {
 
         $this->validate([
-            'form.email' => 'required|email',
+            'form.email' => 'required',
             'form.password' => 'required',
         ]);
 
-            
+
 
         Auth::attempt($this->form);
         if(Auth::attempt($this->form) == false)
         {
             $this->counter = 1;
             return;
+        }
+        else
+        {
+            if(Auth::user()->isFamil == 0)
+            {
+
+            }
         }
 
 
@@ -47,7 +54,7 @@ class Login extends Component
         {
             // ver se a base de dados existe ou não
             DB::statement('create database ' .$bd);
-            trata();
+            criardb();
             return redirect('/unidades');
         }
         else

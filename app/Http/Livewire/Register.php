@@ -17,6 +17,7 @@ class Register extends Component
         'email' => '',
         'password' => '',
         'password_confimation' => '',
+        'IsFamil' => 0,
     ];
     public $Ncontribuinte, $erroNr, $db;
 
@@ -42,37 +43,35 @@ class Register extends Component
         }
         else
         {
-            $this->erroNr = '';
+           $this->erroNr = '';
             if($contribuintearray['nif_validation'] == 'true')
             {
                 $this->erroNr = '';
-                    $bd = str_replace(' ','_',$this->db);
-                    $bd = strtolower($bd);
-                    User::create([
-                        'db' => $bd,
-                        'name' => $this->form['name'],
-                        'email' => $this->form['email'],
-                        'password' => $this->form['password'],
-                    ]);
+                $bd = str_replace(' ','_',$this->db);
+                $bd = strtolower($bd);
+                User::create([
+                    'db' => $bd,
+                    'name' => $this->form['name'],
+                    'email' => $this->form['email'],
+                    'password' => $this->form['password'],
+                ]);
 
-                    $env = new DotenvEditor();
-                    $env->changeEnv([
-                        'DB_DATABASE2' => $bd,
-                    ]);
+                $env = new DotenvEditor();
+                $env->changeEnv([
+                    'DB_DATABASE2' => $bd,
+                ]);
 
-                    return redirect('/login');
+                return redirect('/login');
 
 
                 //apenas muda de view aqui dentro
 
             }
-        else
-        {
-            $this->erroNr = 'Número de contribuinte inválido';
+            else
+            {
+                $this->erroNr = 'Número de contribuinte inválido';
+            }
         }
-     }
-
-
 
     }
 

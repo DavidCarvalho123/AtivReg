@@ -18,7 +18,7 @@ class CreateClientesTable extends Migration
             $table->string('nome',70);
             $table->string('apelido',70);
             $table->date('data_entrou');
-            $table->string('notas');
+            $table->string('notas')->nullable();
             $table->string('foto')->nullable();
             $table->string('unidades_id',6);
             $table->foreign('unidades_id')->references('id')->on('unidades');

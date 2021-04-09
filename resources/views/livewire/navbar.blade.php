@@ -73,6 +73,15 @@
                 </li>
                 -->
                 <li class="nav-item">
+                    @if ($isadmin == 0)
+                        <a class="nav-link" href="/mudarpasse">
+                            <i class="nc-icon nc-key-25" style="margin-right: 10px;padding-bottom: 15px;"></i>
+                            Mudar de palavra-passe
+                        </a>
+                    @endif
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link" href="/logout">
                         <i class="nc-icon nc-button-power" style="margin-right: 10px;padding-bottom: 15px;"></i>
                         Logout
@@ -88,7 +97,7 @@
 <div class="content">
     <div class="container-fluid">
         <div class="section">
-            @livewire('interior', ['unidade' => $unidade])
+            @livewire('interior', ['unidade' => $unidade,'ab'=>$ab])
         </div>
     </div>
 </div>

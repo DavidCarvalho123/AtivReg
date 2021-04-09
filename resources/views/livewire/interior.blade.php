@@ -371,7 +371,7 @@
                                 </div>
                             </div>
                             <div class="col-7">
-                                <div class="container vertical-scrollable" style="padding: 0px; max-height:640px;">
+                                <div class="container vertical-scrollable" style="padding: 0px; max-height:560px;">
                                     <div class="card" >
                                         @if ($gruposcolaborador->count() > 0)
                                             <div class="card-header">
@@ -1104,7 +1104,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="passtemp">Password temporária</label>
+                                    <label for="passtemp">Password</label>
                                     <input class="form-control" type="text" id="passtemp" wire:model.defer="passtemp" required
                                     @if ($edit == 1)
                                         disabled
@@ -1231,7 +1231,165 @@
     </div>
 @elseif($show == 7)
     <div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            @if ($edit == 1)
+                                <h4 class="card-title">Editar um cliente</h4>
+                            @else
+                                <h4 class="card-title">Criar um cliente</h4>
+                            @endif
 
+                        </div>
+                        <div class="card-body">
+                            <form wire:submit.prevent="submitcli">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="nomecli">Nome do cliente</label>
+                                            <input class="form-control" type="text" id="nomecli" wire:model.defer="nomecli" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="apelidocli">Apelido do cliente</label>
+                                            <input class="form-control" type="text" id="apelidocli" wire:model.defer="apelidocli" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="datacli">Data de entrada</label>
+                                            <input class="form-control" type="date" id="datacli" wire:model.defer="datacli" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="notascli">Notas</label>
+                                            <textarea class="form-control" rows="10" cols="30" id="notascli" wire:model.defer="notascli"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="fileUpload3">Fotos (Opcional)</label>
+                                            <div class="form-control" style="padding-top: 5px;">
+                                                <div class="row">
+                                                    <div class="col-11" style="padding-top: 0px;">
+                                                        <input wire:model="fotocli" style="height:auto" type="file" id="fileUpload3" {{ $fechar }}>
+                                                    </div>
+                                                    @if ($fotocli != '')
+                                                        <div class="col-1" wire:click="cleanfiles3">
+                                                            <i class="nc-icon nc-icon nc-simple-remove"></i>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="unicli">Unidades</label>
+                                            <select class="form-control" id="unicli" wire:model.defer="unicli">
+                                                <option value="" selected>Carregue para abrir</option>
+                                                @foreach ($todosuni as $n)
+                                                    <option value="{{ $n->id }}">{{ $n->unidade }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="familcli"><div class="row"><div class="col-3.5">Familiares</div><div class="col-8.5" style="padding-left: 0px;"><h6 style="top: 2px;position: relative;">(CTRL+Click para escolher vários)</h6></div></div></label>
+                                            <select class="form-control" id="familcli" wire:model.defer="familcli" multiple required>
+                                                @foreach ($todosfamils as $n)
+                                                    <option value="{{ $n->id }}">{{ $n->nome.' '.$n->apelido }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if ($errorcli != '')
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $errorcli }}
+                                    </div>
+                                @endif
+                                <button wire:loading.attr="disabled" wire:target="fotocli" class="btn btn-info btn-fill pull-right" type="submit">
+                                    <i class="nc-icon nc-send" style="position: relative;top: 2px;"></i>
+                                    Submeter
+                                </button>
+                                <div wire:loading wire:target="fotocli" style="color: #4489d8; margin-right:10px;top: 3px;" class="la-ball-clip-rotate pull-right">
+                                    <div></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Todos os clientes submetidos</h4>
+                        </div>
+                        <div class="card-body table-full-width table-responsive" style="margin-left: 0px;">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Data de entrada</th>
+                                        <th>Unidade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($todoscli as $e)
+                                        <tr>
+                                            <td>
+                                                {{ $e->nome.' '.$e->apelido }}
+                                            </td>
+                                            <td>
+                                                {{ $e->data_entrou }}
+                                            </td>
+                                            <td>
+                                                {{ $e->unidades->unidade }}
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <button wire:click="clonecli('{{ $e->id }}')" class="btn btn-md btn-fill btn-warning">Editar</button>
+                                            </td>
+                                            <td style="text-align: center;display: table-cell;">
+                                                <button wire:click="removecli('{{ $e->id }}')" class="btn btn-md btn-fill btn-danger">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+        if ($javas == 51)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationCli("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        if ($javas == 52)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationRemCli("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        ?>
     </div>
 @elseif($show == 8)
     <div>
@@ -1240,7 +1398,12 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Introduzir um ficheiro</h4>
+                            @if ($edit == 1)
+                                <h4 class="card-title">Editar um ficheiro</h4>
+                            @else
+                                <h4 class="card-title">Introduzir um ficheiro</h4>
+                            @endif
+
                         </div>
                         <div class="card-body">
                             <form wire:submit.prevent="submitfich">
@@ -1251,7 +1414,7 @@
                                             <div class="form-control" style="padding-top: 5px;">
                                                 <div class="row">
                                                     <div class="col-11" style="padding-top: 0px;">
-                                                        <input wire:model="ficheiros" style="height:auto" type="file" id="fileUpload2" required>
+                                                        <input wire:model="ficheiros" style="height:auto;" type="file" id="fileUpload2" {{ $fechar }}>
                                                     </div>
                                                     @if ($ficheiros != '')
                                                         <div class="col-1" wire:click="cleanfiles2">
@@ -1278,8 +1441,8 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="unifich">Unidade</label>
-                                            <select class="form-control" id="unifich" wire:model.defer="unifich">
+                                            <label for="unifich"><div class="row"><div class="col-3.5">Unidades</div><div class="col-8.5" style="padding-left: 0px;"><h6 style="top: 2px;position: relative;">(CTRL+Click para escolher vários)</h6></div></div></label>
+                                            <select class="form-control" id="unifich" wire:model.defer="unifich" multiple required>
                                                 @foreach ($todosuni as $n)
                                                     <option value="{{ $n->id }}">{{ $n->unidade }}</option>
                                                 @endforeach
@@ -1304,12 +1467,415 @@
                     </div>
                 </div>
             </div>
-        <div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Todos os ficheiros submetidos</h4>
+                        </div>
+                        <div class="card-body table-full-width table-responsive" style="margin-left: 0px;">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nome do ficheiro</th>
+                                        <th>Descrição do ficheiro</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($fi as $e)
+                                        <tr>
+                                            <td>
+                                                {{ $e['nome_ficheiro'] }}
+                                            </td>
+                                            <td>
+                                                {{ $e['descricao_ficheiro'] }}
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <button wire:click="clonefich('{{ $e['id'] }}')" class="btn btn-md btn-fill btn-warning">Editar</button>
+                                            </td>
+                                            <td style="text-align: center;display: table-cell;">
+                                                <button wire:click="removefich('{{ $e['id'] }}')" class="btn btn-md btn-fill btn-danger">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php if ($javas == 31)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationFich("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        if ($javas == 32)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationRemFich("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }?>
     </div>
 @elseif($show == 9)
     <div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            @if ($edit == 1)
+                                <h4 class="card-title">Editar uma conta de familiar</h4>
+                            @else
+                                <h4 class="card-title">Criar uma conta de familiar</h4>
+                            @endif
 
+                        </div>
+                        <div class="card-body">
+                            <form wire:submit.prevent="submitfamil">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="nomefamil">Nome do familiar</label>
+                                            <input class="form-control" type="text" id="nomefamil" wire:model.defer="nomefamil" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="apelidofamil">Apelido do familiar</label>
+                                            <input class="form-control" type="text" id="apelidofamil" wire:model.defer="apelidofamil" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="utilfamil">nome de utilizador</label>
+                                            <input class="form-control" type="text" id="utilfamil" wire:model.defer="utilfamil" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="passfamil">password</label>
+                                            <input class="form-control" type="text" id="passfamil" wire:model.defer="passfamil" required {{ $fechar }}>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="nr_telfamil">Nº de telemóvel (opcional)</label>
+                                    <input class="form-control" type="text" id="nr_telfamil" wire:model.defer="nr_telfamil">
+                                </div>
+
+                                @if ($errofamil != '')
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $errofamil }}
+                                    </div>
+                                @endif
+                                <button class="btn btn-info btn-fill pull-right" type="submit">
+                                    <i class="nc-icon nc-send" style="position: relative;top: 2px;"></i>
+                                    Submeter
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Todos os familiares criados</h4>
+                        </div>
+                        <div class="card-body table-full-width table-responsive" style="margin-left: 0px;">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Nome de utilizador</th>
+                                        <th>Nº de telemóvel</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($todosfamils as $e)
+                                        <tr>
+                                            <td>
+                                                {{ $e->nome.' '.$e->apelido }}
+                                            </td>
+                                            <td>
+                                                {{ $e->nome_utilizador }}
+                                            </td>
+                                            <td>
+                                                {{ $e->nr_telefone }}
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <button wire:click="clonefamil('{{ $e->id }}')" class="btn btn-md btn-fill btn-warning">Editar</button>
+                                            </td>
+                                            <td style="text-align: center;display: table-cell;">
+                                                <button wire:click="removefamil('{{ $e->id }}')" class="btn btn-md btn-fill btn-danger">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php if ($javas == 41)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationFamil("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        if ($javas == 42)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationRemFamil("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        if ($javas == 43)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationUpFamil("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }?>
+    </div>
+@elseif($show == 10)
+    <div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card card-user" style="margin-bottom: 0px;">
+                        <div class="card-image" style="height: 70px">
+                            <img src="#" alt="">
+                        </div>
+                        <div class="card-body">
+                            <div class="author">
+                                <div>
+                                    @if($clienteselect->foto == null)
+                                        <img class="avatar border-gray" src="{{ asset('light-dashboard/assets/img/default-avatar.png') }}"  alt="Não foi encontrada imagem">
+                                    @else
+                                        <img class="avatar border-gray" src="{{ asset('storage/'.$this->origem.'/'.$clienteselect->unidades_id.'/fotos/'.$clienteselect->foto) }}" alt="{{ $clienteselect->nome }}">
+                                    @endif
+                                    <h5 class="title">{{ $clienteselect->nome.' '.$clienteselect->apelido }}</h5>
+                                </div>
+                                <p class="description">
+                                    Entrou em: {{ $clienteselect->data_entrou }} <br>
+                                    Unidade a que pertence: {{ $clienteselect->unidades->unidade }}
+                                </p>
+                            </div>
+                            <p class="description text-center">
+                                {{ $clienteselect->notas }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="container vertical-scrollable" style="max-height:400px;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Atividades mais recentes de {{ $clienteselect->nome }}</h4>
+                            </div>
+                            <div class="card-body table-full-width table-responsive" style="margin-left: 0px;">
+                                @if ($erro3 != '')
+                                    <div class="alert alert-warning" style="margin-right: 10px;" role="alert"> {{ $erro3 }} </div>
+                                @else
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Realizada</th>
+                                                <th>Registado por</th>
+                                                <th>Realizado em</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($regrecente as $e)
+                                                @if (array_key_exists('cliente_id',$e))
+                                                    <tr>
+                                                        <td>
+                                                            Individualmente
+                                                        </td>
+                                                        <td>
+                                                            {{ $colabclientes[$e['id']] }} ({{ $colabclientes[$colabclientes[$e['id']]] }})
+                                                        </td>
+                                                        <td>
+                                                            {{ $e['data_realizada'] }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <button wire:click="VerMais('{{ $e['id'] }}','0')" class="btn btn-md btn-fill btn-info">Ver</button>
+                                                        </td>
+                                                    </tr>
+                                                @else
+                                                    <tr>
+                                                        <td>
+                                                            Em grupo
+                                                        </td>
+                                                        <td>
+                                                            {{ $colabclientes[$e['id']] }} ({{ $colabclientes[$colabclientes[$e['id']]] }})
+                                                        </td>
+                                                        <td>
+                                                            {{ $e['data_realizada'] }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <button wire:click="VerMais('{{ $e['id'] }}','1')" class="btn btn-md btn-fill btn-info">Ver</button>
+                                                        </td>
+                                                    </tr>
+                                                @endif
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    @if ($erro3 == '')
+                        <button class="btn btn-primary btn-fill" style="float:right;margin-right:20px;margin-top:10px" wire:click="Vertudo({{ $clienteselect->id }})">Mostrar todas as atividades</button>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+@elseif($show == 11)
+    <div>
+        <?php $it = 0; $ic = 0; ?>
+        <div class="container-fluid" style="padding-left: 0px;">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Atividade selecionada</h4>
+                </div>
+                <div class="card-body table-full-width table-responsive" style="margin-left: 0px;">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Realizada</th>
+                                <th>Realizado em</th>
+                                <th>Iniciou a</th>
+                                <th>Acabou a</th>
+                                <th>Registado por</th>
+                                @foreach ($registo as $a)
+                                    @if ($a->Type == 'text')
+                                        <th>{{ $a->Field }}</th>
+                                    @endif
+                                    @if ($a->Type == 'tinyint(4)')
+                                        <th>{{ $a->Field }}</th>
+                                    @endif
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    {{ $realizada }}
+                                </td>
+                                <td>
+                                    {{ $registselect->data_realizada }}
+                                </td>
+                                <td>
+                                    {{ $registselect->hora_iniciada }}
+                                </td>
+                                <td>
+                                    {{ $registselect->hora_terminada }}
+                                </td>
+                                <td>
+                                    {{ $colabclientes[$registselect['id']] }} ({{ $colabclientes[$colabclientes[$registselect['id']]] }})
+                                </td>
+                                @foreach ($registo as $a)
+
+                                    @if ($a->Type == 'text')
+                                    <td class="text-center">
+                                        {{ $vartext2[$it] }}
+                                        <?php $it++; ?>
+                                    </td>
+                                    @endif
+                                    @if ($a->Type == 'tinyint(4)')
+                                    <td class="text-center">
+                                        {{ $varchoose2[$ic] }}
+                                        <?php $ic++; ?>
+                                    </td>
+                                    @endif
+
+                                @endforeach
+                                <td style="text-align: center;">
+                                    <button wire:click="" class="btn btn-md btn-fill btn-info">Ver Fotos</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+@elseif($show == 12)
+    <div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="container" >
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Todas as atividades de {{ $clienteselect->nome }}</h4>
+                            </div>
+                            <div class="card-body table-full-width table-responsive" style="margin-left: 0px;">
+                                @if ($erro3 != '')
+                                    <div class="alert alert-warning" style="margin-right: 10px;" role="alert"> {{ $erro3 }} </div>
+                                @else
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Realizada</th>
+                                                <th>Registado por</th>
+                                                <th>Realizado em</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($regrecente as $e)
+                                                @if (array_key_exists('cliente_id',$e))
+                                                    <tr>
+                                                        <td>
+                                                            Individualmente
+                                                        </td>
+                                                        <td>
+                                                            {{ $colabclientes[$e['id']] }} ({{ $colabclientes[$colabclientes[$e['id']]] }})
+                                                        </td>
+                                                        <td>
+                                                            {{ $e['data_realizada'] }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <button wire:click="VerMais('{{ $e['id'] }}','0')" class="btn btn-md btn-fill btn-info">Ver</button>
+                                                        </td>
+                                                    </tr>
+                                                @else
+                                                    <tr>
+                                                        <td>
+                                                            Em grupo
+                                                        </td>
+                                                        <td>
+                                                            {{ $colabclientes[$e['id']] }} ({{ $colabclientes[$colabclientes[$e['id']]] }})
+                                                        </td>
+                                                        <td>
+                                                            {{ $e['data_realizada'] }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <button wire:click="VerMais('{{ $e['id'] }}','1')" class="btn btn-md btn-fill btn-info">Ver</button>
+                                                        </td>
+                                                    </tr>
+                                                @endif
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @endif
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endif
-
-

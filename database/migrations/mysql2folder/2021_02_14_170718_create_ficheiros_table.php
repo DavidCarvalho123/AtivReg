@@ -16,7 +16,7 @@ class CreateFicheirosTable extends Migration
         Schema::connection('mysql2')->create('ficheiros', function (Blueprint $table) {
             $table->id();
             $table->string('link');
-            $table->string('nome_ficheiro',60);
+            $table->string('nome_ficheiro',100);
             $table->string('descricao_ficheiro');
             $table->timestamps();
         });

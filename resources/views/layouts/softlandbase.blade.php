@@ -25,6 +25,7 @@
 
         <!-- Template Main CSS File -->
         <link href="{{ asset('softland/assets/css/style.css') }}" rel="stylesheet">
+        @livewireStyles()
         <!-- =======================================================
         * Template Name: SoftLand - v2.2.1
         * Template URL: https://bootstrapmade.com/softland-bootstrap-app-landing-page-template/
@@ -49,6 +50,7 @@
         <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
 
         <!-- Vendor JS Files -->
+        @livewireScripts()
         <script src="{{ asset('softland/assets/vendor/jquery/jquery.min.js') }}"></script>
         <script src="{{ asset('softland/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ asset('softland/assets/vendor/jquery.easing/jquery.easing.min.js') }}"></script>

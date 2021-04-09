@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Colaboradore;
+use App\Models\Familiare;
 use App\Models\niveis_intervencoes;
 use Brotzka\DotenvEditor\DotenvEditor;
 use Illuminate\Support\Facades\Auth;
@@ -16,9 +17,9 @@ class Sidebar extends Component
 {
 
     public $unidade;
-    public $titulos = [];
+    public $titulos = [], $clientes = [], $cli = [];
     public $db;
-    public $show, $admin, $uni, $nive, $colab, $pagpri, $viewnivel, $other1 = 0,$other2 = 0,$other3 = 0, $otherclick1, $otherclick2, $otherclick3;
+    public $show, $admin, $uni, $nive, $colab, $pagpri, $viewnivel, $other1 = 0,$other2 = 0,$other3 = 0, $otherclick1, $otherclick2, $otherclick3, $client, $ab;
 
     public function loadPaginaPrincipal()
     {
@@ -32,10 +33,13 @@ class Sidebar extends Component
         }
         else
         {
-            $this->pagpri = 'active';
-            $this->viewnivel = '';
-            $this->show = true;
-            $this->emit('PaginaPrincipal', $this->show);
+            if(Auth::user()->IsFamil == 0)
+            {
+                $this->pagpri = 'active';
+                $this->viewnivel = '';
+                $this->show = true;
+                $this->emit('PaginaPrincipal', $this->show);
+            }
         }
     }
 
@@ -53,42 +57,62 @@ class Sidebar extends Component
         $this->other1 = 0;
         $this->other2 = 0;
         $this->other3 = 0;
+        $this->client = [];
         $env = new DotenvEditor();
         $this->db = $env->getValue('DB_DATABASE2');
         $this->db = str_replace('_', ' ', $this->db);
-
-        $colaboradores = Colaboradore::where('email', '=', Auth::user()->email)->where('IsDeleted',0)->first();
-        $tabela = 'intervencoes_'.$colaboradores->Niveis->nivel;
-        if(Schema::connection('mysql2')->hasTable($tabela))
+        if(Auth::user()->IsFamil == 0)
         {
-            if($colaboradores->niveis_id != 1)
+            $colaboradores = Colaboradore::where('email', '=', Auth::user()->email)->where('IsDeleted',0)->first();
+            $tabela = 'intervencoes_'.$colaboradores->Niveis->nivel;
+            if(Schema::connection('mysql2')->hasTable($tabela))
             {
-                $tables = DB::connection('mysql2')->select("SHOW TABLES LIKE 'intervencoes\_%'");
-                $arrays = [];
-                foreach($tables as $object)
+                if($colaboradores->niveis_id != 1)
                 {
-                    $arrays[] = (array) $object;
-                }
-
-                foreach($arrays as $array)
-                {
-                    $string = '';
-                    $string = implode('',$array);
-                    $string = rtrim($string,'s');
-                    $string .= '_id';
-                    $verificar = niveis_intervencoes::where('niveis_id',$colaboradores->niveis_id)->first();
-                    if($verificar->$string != '')
+                    $tables = DB::connection('mysql2')->select("SHOW TABLES LIKE 'intervencoes\_%'");
+                    $arrays = [];
+                    foreach($tables as $object)
                     {
-                        array_push($this->titulos, $colaboradores->Niveis->nivel);
+                        $arrays[] = (array) $object;
                     }
-                    else
+
+                    foreach($arrays as $array)
                     {
-                        // o user não tem autorização para fazer crud
+                        $string = '';
+                        $string = implode('',$array);
+                        $string = rtrim($string,'s');
+                        $string .= '_id';
+                        $verificar = niveis_intervencoes::where('niveis_id',$colaboradores->niveis_id)->first();
+                        if($verificar->$string != '')
+                        {
+                            array_push($this->titulos, $colaboradores->Niveis->nivel);
+                        }
+                        else
+                        {
+                            // o user não tem autorização para fazer crud
+                        }
                     }
                 }
             }
+            $this->checkplace($colaboradores->Niveis);
         }
-        $this->checkplace($colaboradores->Niveis);
+        else
+        {
+            $a = Familiare::where('nome_utilizador',Auth::user()->email)->first();
+            foreach($a->Clientes as $b)
+            {
+                $this->cli[$b->id] = $b->nome.' '.$b->apelido;
+                array_push($this->clientes,'');
+            }
+
+            $this->clientes[0] = 'active';
+            $this->show = 10;
+            foreach($this->cli as $z => $v)
+            {
+                $this->ab = $z;
+                break;
+            }
+        }
     }
 
     public function checkplace($niveis)
@@ -107,6 +131,28 @@ class Sidebar extends Component
         $this->otherclick3 = '';
         $this->show = 1;
         $this->emit('PaginaPrincipal', $this->show);
+    }
+
+    public function ViewClientes($receive, $i)
+    {
+        $c = 0;
+        foreach($this->clientes as $b)
+        {
+            $this->clientes[$c] = '';
+            $c++;
+        }
+        $this->clientes[$i] = 'active';
+
+        $this->show = 10;
+        foreach($this->cli as $key => $values)
+        {
+            if($values == $receive)
+            {
+                $id = $key;
+                break;
+            }
+        }
+        $this->emit('IrCliente', $this->show, $id);
     }
 
     public function ViewNiveis($nivel)

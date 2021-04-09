@@ -10,7 +10,7 @@ class Nivei extends Model
     use HasFactory;
     protected $connection = "mysql2";
     protected $fillable=[
-        'nivel',
+        'nivel','clientes','ficheiros','familiares',
     ];
 
     public function colaboradores()

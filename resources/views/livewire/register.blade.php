@@ -55,7 +55,7 @@
                     <span class="btn-show-pass">
                         <i class="zmdi zmdi-eye"></i>
                     </span>
-                    <input class="input100" type="password" name="password" id="password" placeholder="Password" wire:model.defer="form.password">
+                    <input class="input100" type="password" name="password" id="password" placeholder="Senha" wire:model.defer="form.password">
                     <span class="focus-input100"></span>
 
                 </div>
@@ -65,7 +65,7 @@
                     <span class="btn-show-pass">
                         <i class="zmdi zmdi-eye"></i>
                     </span>
-                    <input class="input100" type="password" name="password_confirmation" id="password-confirm" placeholder="Confirmar Password" wire:model.defer="form.password_confimation">
+                    <input class="input100" type="password" name="password_confirmation" id="password-confirm" placeholder="Confirmar Senha" wire:model.defer="form.password_confimation">
                     <span class="focus-input100"></span>
                 </div>
 

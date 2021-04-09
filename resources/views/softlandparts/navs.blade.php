@@ -50,7 +50,7 @@
                                 <ul class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
                                     @guest
                                         <li><a href="/Login" class="nav-link">Login</a></li>
-                                        <li><a href="/Register" class="nav-link">Registar</a></li>
+                                        <li><a href="/Registar" class="nav-link">Registar</a></li>
                                     @endguest
                                     @auth
                                     <li class="has-children">

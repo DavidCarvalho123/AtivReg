@@ -14,16 +14,15 @@
     </div>
 
     <div class="container">
-    <div class="row align-items-center">
+    <div class="row align-items-center" style="min-height: 790px;">
         <div class="col-12 hero-text-image">
         <div class="row">
             <div class="col-lg-7 text-center text-lg-left">
             <h1 data-aos="fade-right">Registos diários com AtivReg</h1>
-            <p class="mb-5" data-aos="fade-right" data-aos-delay="100">Disponivel para estruturas residenciais, creches, escolas privadas, entre outros.</p>
+            <h5 style="color:#fff;" class="mb-5" data-aos="fade-right" data-aos-delay="100">Disponivel para estruturas residenciais, creches, escolas privadas, entre outros.</h5>
             </div>
             <div class="col-lg-5 iphone-wrap">
-            <img src="assets/img/phone_1.png" alt="Image" class="phone-1" data-aos="fade-right">
-            <img src="assets/img/phone_2.png" alt="Image" class="phone-2" data-aos="fade-right" data-aos-delay="200">
+            <img src="{{ asset('img/Screenshot_4.png') }}" alt="Image" class="phone-1" style="width: 550px;margin-top:100px;" data-aos="fade-right">
             </div>
         </div>
         </div>

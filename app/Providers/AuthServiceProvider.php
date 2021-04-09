@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Colaboradore;
+use App\Models\Familiare;
 use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
@@ -44,11 +45,18 @@ class AuthServiceProvider extends ServiceProvider
         // Gate para admin
         Gate::define('admin-only', function (User $user)
         {
-            $colaboradores = Colaboradore::where('email', '=', Auth::user()->email)->first();
-
-            if($colaboradores->unidades->count() < 1)
+            if(Auth::user()->IsFamil == 0)
             {
-                return true;
+                $colaboradores = Colaboradore::where('email', '=', Auth::user()->email)->first();
+
+                if($colaboradores->unidades->count() < 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
@@ -59,15 +67,35 @@ class AuthServiceProvider extends ServiceProvider
         // Gate para multi unidades
         Gate::define('multiuni-only', function (User $user)
         {
-            $colaboradores = Colaboradore::where('email', '=', Auth::user()->email)->first();
-
-            if($colaboradores->unidades->count() <= 1 )
+            if(Auth::user()->IsFamil == 0)
             {
-                return false;
+                $colaboradores = Colaboradore::where('email', '=', Auth::user()->email)->where('IsDeleted',0)->first();
+
+                if($colaboradores->unidades->count() <= 1 )
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
             }
             else
             {
-                return true;
+                $a = Familiare::where('nome_utilizador',Auth::user()->email)->first();
+                $c = '';
+                foreach($a->clientes as $b)
+                {
+                    if($b->unidades_id == $c)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                    $c = $b->unidades_id;
+                }
             }
         });
 

@@ -25,4 +25,9 @@ class Familiare extends Model
     {
         return $this->belongsToMany(Cliente::class, 'clientes_familiares');
     }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
 }

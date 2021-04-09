@@ -34,12 +34,14 @@
 
                 <ul class="nav" id="myDIV">
                     @if ($admin == 0)
-                        <li class="nav-item {{ $pagpri }}" wire:click="PaginaPrincipal">
-                            <a class="nav-link" href="#" onclick="event.preventDefault();" >
-                                <i class="nc-icon nc-icon nc-paper-2"></i>
-                                <p>Página Principal</p>
-                            </a>
-                        </li>
+                        @if(Auth::user()->IsFamil == 0)
+                            <li class="nav-item {{ $pagpri }}" wire:click="PaginaPrincipal">
+                                <a class="nav-link" href="#" onclick="event.preventDefault();" >
+                                    <i class="nc-icon nc-icon nc-paper-2"></i>
+                                    <p>Página Principal</p>
+                                </a>
+                            </li>
+
                         @foreach ($titulos as $titulo)
                             <br style="margin-top: 10px;">
                             <li class="nav-item {{ $viewnivel }}" wire:click="ViewNiveis('{{ $titulo }}')">
@@ -49,6 +51,21 @@
                                 </a>
                             </li>
                         @endforeach
+                        @else
+                        <?php $i = 0;?>
+                            @foreach ($cli as $cliente)
+                                <li class="nav-item {{ $clientes[$i] }}" wire:click="ViewClientes('{{ $cliente }}','{{ $i }}')">
+                                    <a class="nav-link" href="#" onclick="event.preventDefault();" >
+                                        <i class="nc-icon nc-icon nc-circle-09"></i>
+                                        <p>{{ $cliente }}</p>
+                                        <a href=""></a>
+                                    </a>
+                                </li>
+                                <br style="margin-top: 10px;">
+                                <?php $i++; ?>
+                            @endforeach
+                        @endif
+
                     @else
                         <li class="nav-item {{ $uni }}" wire:click="ClickUnidades">
                             <a class="nav-link" href="#" onclick="event.preventDefault();" >
@@ -117,8 +134,8 @@
 
 
     <div class="main-panel">
-        @livewire('navbar', ['unidade' => $unidade])
-        @livewire('footer')
+          @livewire('navbar',['unidade'=>$unidade,'ab'=>$ab])
+          @livewire('footer')
     </div>
 
 

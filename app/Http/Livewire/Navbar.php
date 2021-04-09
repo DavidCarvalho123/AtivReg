@@ -2,16 +2,25 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Cliente;
 use App\Models\Colaboradore;
+use App\Models\Familiare;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
+use Symfony\Component\CssSelector\Parser\Shortcut\ElementParser;
 
 class Navbar extends Component
 {
-    public $unidade;
+    public $unidade, $isadmin, $ab;
     public $titulo = '';
-    protected $listeners = ['PaginaPrincipal', 'IrRegistos', 'uni','nive','colabo','cli','fich','famil'];
+    protected $listeners = ['PaginaPrincipal', 'IrRegistos', 'uni','nive','colabo','cli','fich','famil','IrCliente'];
+
+    public function IrCliente($receive,$cliente)
+    {
+        $z = Cliente::where('id',$cliente)->first();
+        $this->titulo = $z->nome.' '.$z->apelido;
+    }
 
     public function cli()
     {
@@ -20,7 +29,7 @@ class Navbar extends Component
 
     public function fich()
     {
-        $this->titulo = 'Introduzão de ficheiros';
+        $this->titulo = 'Introdução de ficheiros';
     }
 
     public function famil()
@@ -68,35 +77,45 @@ class Navbar extends Component
 
     public function mount()
     {
-
-        if($this->unidade != '')
+        if(Auth::user()->IsFamil == 1)
         {
-            $this->titulo = 'Página principal - '.$this->unidade;
+            $z = Cliente::where('id',$this->ab)->first();
+            $this->titulo = $z->nome.' '.$z->apelido;
         }
         else
         {
-            if(Gate::allows('multiuni-only', Auth::user())) $multiuni = 'true';
-            else $multiuni = 'false';
-            if($multiuni == 'false')
+            if($this->unidade != '')
             {
-                if(Gate::allows('admin-only',Auth::user()))
-                {
-                    $this->titulo = 'Criação de unidades';
-                }
-                else
-                {
-                    $colaboradores = Colaboradore::find(1)->where('email', '=', Auth::user()->email)->get();
-                    foreach($colaboradores as $obj)
-                    {
-                        $this->titulo = 'Página principal - '.$obj->unidades->first()->unidade;
-                    }
-                }
-
+                $this->titulo = 'Página principal - '.$this->unidade;
             }
             else
             {
-                $this->titulo = 'Página principal - ';
+                if(Gate::allows('multiuni-only', Auth::user())) $multiuni = 'true';
+                else $multiuni = 'false';
+                if($multiuni == 'false')
+                {
+                    if(Gate::allows('admin-only',Auth::user()))
+                    {
+                        $this->titulo = 'Criação de unidades';
+                        $this->isadmin = 1;
+                    }
+                    else
+                    {
+                        $this->isadmin = 0;
+                        $colaboradores = Colaboradore::find(1)->where('email', '=', Auth::user()->email)->get();
+                        foreach($colaboradores as $obj)
+                        {
+                            $this->titulo = 'Página principal - '.$obj->unidades->first()->unidade;
+                        }
+                    }
+
+                }
+                else
+                {
+                    $this->titulo = 'Página principal - ';
+                }
             }
+
         }
 
 

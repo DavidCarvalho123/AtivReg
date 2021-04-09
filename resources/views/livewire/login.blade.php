@@ -2,7 +2,7 @@
     <div class="limiter">
         <div class="container-login100">
             <div class="wrap-login100">
-                <form class="login100-form validate-form" wire:submit.prevent="submit">
+                <form class="login100-form validate-form" wire:submit.prevent="submit1">
 
                     <span class="login100-form-title p-b-26">
                         Bem-vindo
@@ -35,7 +35,7 @@
                     @endif
                     <!-- Email -->
                     <div class="wrap-input100 validate-input">
-                        <input class="input100" type="email" name="email" id="email" placeholder="Email" wire:model.defer="form.email">
+                        <input class="input100" type="text" name="email" id="email" placeholder="Email/nome de utilizador" wire:model.defer="form.email">
                         <span class="focus-input100"></span>
                         @error('email')
                             <span class="invalid-feedback" role="alert">
