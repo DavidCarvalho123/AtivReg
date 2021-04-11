@@ -10,7 +10,7 @@ class Documents extends Component
 
     public function mount()
     {
-        $mostra = 0;
+        $this->mostra = 0;
     }
 
     public function click1()

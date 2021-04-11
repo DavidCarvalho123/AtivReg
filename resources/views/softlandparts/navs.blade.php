@@ -7,18 +7,20 @@
     </div>
     <div>
         <ul class="site-nav-wrap">
-            <li class="active"><a href="index.html" class="nav-link">Home</a></li>
-            <li><a href="features.html" class="nav-link">Features</a></li>
-            <li><a href="pricing.html" class="nav-link">Pricing</a></li>
-
-            <li class="has-children"><span class="arrow-collapse collapsed" data-toggle="collapse" data-target="#collapseItem0" aria-expanded="false"></span>
-                <a href="blog.html" class="nav-link">Blog</a>
-                <ul class="collapse" id="collapseItem0" style="">
-                    <li><a href="blog.html" class="nav-link">Blog</a></li>
-                    <li><a href="blog-single.html" class="nav-link">Blog Sigle</a></li>
-                </ul>
-            </li>
-            <li><a href="contact.html" class="nav-link">Contact</a></li>
+            <li><a href="/docs" class="nav-link">Documentação</a></li>
+            @guest
+                <li><a href="/Login" class="nav-link">Login</a></li>
+                <li><a href="/Registar" class="nav-link">Registar</a></li>
+            @endguest
+            @auth
+                <li class="has-children">
+                    <a class="nav-link"><?php echo Auth::user()->name; ?></a>
+                    <ul class="dropdown">
+                        <li><a href="/unidades" class="nav-link">Painel de Controlo</a></li>
+                        <li><a href="/logout" class="nav-link">Logout</a></li>
+                    </ul>
+                </li>
+            @endauth
         </ul>
     </div>
 </div>

@@ -54,7 +54,8 @@ class Interior extends Component
     public $fotocli, $nomecli, $apelidocli, $datacli, $notascli, $unicli, $todoscli, $errocli, $familcli, $idcliantigo, $errorcli;
 
     public $clienteselect, $ab, $erro3, $colabclientes;
-    public $registselect, $realizada;
+    public $registselect, $registselect2 ,$realizada, $btn, $mostrarfotos = [], $clienteuni;
+
     public function mount()
     {
         $env = new DotenvEditor();
@@ -147,6 +148,7 @@ class Interior extends Component
         {
             $this->show = 10;
             $this->clienteselect = Cliente::where('id',$this->ab)->first();
+            $this->clienteuni = Unidades::where('id',$this->clienteselect->unidades->id)->first();
             $x = intervencoesindividuai::where('cliente_id',$this->ab)->get();
             $z = intervencoesgrupo::get();
             $arrayz = [];
@@ -212,6 +214,7 @@ class Interior extends Component
     {
         $this->show = $receive;
         $this->clienteselect = Cliente::where('id',$cliente)->first();
+        $this->clienteuni = Unidades::where('id',$this->clienteselect->unidades->id)->first();
         $x = intervencoesindividuai::where('cliente_id',$cliente)->get();
         $z = intervencoesgrupo::get();
         $arrayz = [];
@@ -241,15 +244,41 @@ class Interior extends Component
     }
 
 
+    public function verfotos($id,$reali)
+    {
+        $this->show = 13;
+        $this->unidade = $this->clienteselect->unidades_id;
+        if($reali == 'individualmente')
+        {
+            //indi
+            $this->registselect2 = intervencoesindividuai::where('id',$id)->first();
+            $verfotos = fotos::where('intervencao_individuai_id',$id)->get();
+            foreach($verfotos as $f)
+            {
+                array_push($this->mostrarfotos,$f);
+            }
+        }
+        else
+        {
+            //grupo
+
+        }
+    }
+
     public function VerMais($regist,$grup)
     {
         $this->show = 11;
+
         if($grup == 0)
         {
             //indi
             $this->registselect = intervencoesindividuai::where('id',$regist)->first();
             $pc = intervencoes_entidades::where('intervencao_individuai_id',$this->registselect->id)->first();
             $this->realizada = 'individualmente';
+            $h = fotos::where('intervencao_individuai_id',$regist)->get();
+            if($h->count() < 1) $this->btn = 'nao';
+            else $this->btn = 'sim';
+
         }
         else
         {
@@ -257,6 +286,9 @@ class Interior extends Component
             $this->registselect = intervencoesgrupo::where('id',$regist)->first();
             $pc = intervencoes_entidades::where('intervencao_grupo_id',$this->registselect->id)->first();
             $this->realizada = 'Em grupo';
+            $h = fotos::where('intervencao_grupo_id',$regist)->get();
+            if($h->count() < 1) $this->btn = 'nao';
+            else $this->btn = 'sim';
         }
         $tables = DB::connection('mysql2')->select("SHOW TABLES LIKE 'intervencoes\_%'");
         foreach($tables as $object)
@@ -267,11 +299,10 @@ class Interior extends Component
         {
             $string = '';
             $string = implode('',$array);
-            $string4 = $string;
+            $string6 = $string;
             $string2 = 'id_';
             $string = str_replace('intervencoes_','',$string);
-            $string2 .= $string;
-
+            $string2 .= $string;;
             if($pc->$string2 == null)
             {
 
@@ -279,6 +310,7 @@ class Interior extends Component
             else
             {
                 $string3 = $pc->$string2;
+                $string4 = $string6;
             }
         }
         $allvalues = DB::connection('mysql2')->table($string4)->where('id',$string3)->first();
@@ -503,9 +535,25 @@ class Interior extends Component
             }
             $ext = $this->ficheiros->extension();
             $imgnome = Str::random();
+            $sonome = $imgnome;
             $imgnome = $imgnome.'.'.$ext;
             $this->ficheiros->storeAs('public/'.$this->origem.'/ficheiros',$imgnome);
 
+
+            if($ext != 'pdf')
+            {
+                $v = 'thumb_';
+                $v .= $imgnome;
+                $this->ficheiros->storeAs('public/'.$this->origem.'/thumbs',$v);
+            }
+            else
+            {
+                $pdf_file = public_path()."\storage\\".$this->origem."\\ficheiros\\".$imgnome;
+                $output_path = public_path()."\storage\\".$this->origem."\\thumbs\\thumb_".$sonome;
+                Ghostscript::setGsPath("C:\Program Files\gs\gs9.53.3\bin\gswin64c.exe");
+                $pdf = new Pdf($pdf_file);
+                $pdf->setOutputFormat('png')->saveImage($output_path);
+            }
             Ficheiros::create([
                 'link' => $imgnome,
                 'nome_ficheiro' => $this->nomefich,
@@ -543,7 +591,18 @@ class Interior extends Component
     public function removefich($id)
     {
         $fich2 = Ficheiros::where('id',$id)->first();
+        $nomethumb3 = substr($fich2->link, -4, strpos($fich2->link, "."));
+        $nomethumb = 'thumb_'.$fich2->link;
+
+        if($nomethumb3 == '.pdf')
+        {
+            $nomethumb = substr($nomethumb, 0, strpos($nomethumb, "."));
+            $nomethumb .= '.png';
+        }
+
+        Storage::delete('public/'.$this->origem.'/thumbs/'.$nomethumb);
         Storage::delete('public/'.$this->origem.'/ficheiros/'.$fich2->link);
+
 
         Ficheiros::where('id',$id)->delete();
         $this->javas = 32;
@@ -692,9 +751,6 @@ class Interior extends Component
         $this->fechar = '';
         $this->famil(9);
     }
-
-
-
 
 
 
@@ -1832,6 +1888,7 @@ class Interior extends Component
                 }
             }
         }
+        $this->maisrecentes();
     }
 
     public function IrRegistos($receive, $placeholder)

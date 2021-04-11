@@ -1,5 +1,5 @@
 @extends('layouts.softlandbase')
 
 @section('inicial')
-    @include('softlandparts.docs')
+    @livewire('documents')
 @endsection

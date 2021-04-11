@@ -13,7 +13,7 @@
                     Bem-vindo
                 </span>
                 <span class="login100-form-title p-b-48">
-                    <img style="width:80px;" src="{{ asset('img/logoAR.png') }}" alt="logo">
+                    <img style="width:120px" src="{{ asset('img/logoAR.png') }}" alt="logo">
                 </span>
 
                 @if ($errors->any() == true)

@@ -7,9 +7,9 @@
                         Escolha a unidade para entrar
                     </span>
                     <span class="login100-form-title p-b-48" style="padding-bottom: 20px;">
-                        <img style="width:80px;" src="{{ asset('img/logoAR.png') }}" alt="logo">
+                        <img style="width:120px;" src="{{ asset('img/logoAR.png') }}" alt="logo">
                     </span>
-
+<br>
                     @if ($errors->any() == true)
                     <div class="alert alert-danger" role="alert">
                         <ul>

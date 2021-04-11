@@ -14,14 +14,21 @@
                                 @foreach ($objectos as $objecto)
                                     <div class="col" style="padding-left: 0px">
                                         <div class="card" style="width: 19rem;">
-                                            <img src="{{ asset('storage/'.$this->origem.'/ficheiros/'.$objecto->link) }}" class="card-img-top" alt="{{ $objecto->nome_ficheiro }}">
+                                            <?php   $nomethumb3 = substr($objecto->link, -4, strpos($objecto->link, "."));
+                                            $nomethumb = 'thumb_'.$objecto->link;
+                                            if($nomethumb3 == '.pdf')
+                                            {
+                                                $nomethumb = substr($nomethumb, 0, strpos($nomethumb, "."));
+                                                $nomethumb .= '.png';
+                                            }?>
+                                            <img src="{{ asset('storage/'.$this->origem.'/thumbs/'.$nomethumb) }}" class="card-img-top" alt="{{ $objecto->nome_ficheiro }}">
                                             <div class="card-body">
                                                 <h4 class="card-title">{{ $objecto->nome_ficheiro }}</h4>
                                                 <p class="card-text">{{ $objecto->descricao_ficheiro }}</p>
                                                 <div class="container">
                                                     <div class="row">
-                                                        <div class="col-6"><a href="#" class="btn btn-primary">Transferir</a></div>
-                                                        <div class="col-6" style="display: flex;justify-content: center;"><a href="#" class="btn btn-success">Abrir</a></div>
+                                                        <div class="col-6"><a download="{{ $objecto->nome_ficheiro }}" rel="noopener noreferrer" target="_blank" href="/storage/{{ $this->origem }}/ficheiros/{{ $objecto->link }}" class="btn btn-primary btn-fill">Transferir</a></div>
+                                                        <div class="col-6" style="display: flex;justify-content: center;"><a target="_blank" href="/storage/{{ $this->origem }}/ficheiros/{{ $objecto->link }}" class="btn btn-success btn-fill">Abrir</a></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -52,28 +59,35 @@
 
                     usort($regrecente, 'compare');?>
                         <?php  $contaaviso = 0; ?>
+                        <?php $d = 't';$global = 0;?>
                     @foreach ($regrecente as $recente)
-                        <?php $d = 't' ?>
+                        <?php $conta10 = 0 ?>
                         @if(array_key_exists('cliente_id',$recente))
-                            <?php $d = $clientesrecentes->where('id', $recente['cliente_id'])->first();?>
+                            <?php $h = $clientesrecentes->where('id', $recente['cliente_id'])->first();
+                            if($h != null) $conta10 = 1
+                            ?>
                         @else
                             @foreach ($interrecentes as $rec)
                                 @if($rec->id == $recente['id'])
-                                <?php $e = $rec->Clientes()->where('unidades_id','=',$unidade)->get();?>
-                                    @if($e->count() < 1)
-                                        <?php $d = null; ?>
+                                    <?php $e = $rec->Clientes()->where('unidades_id','=',$unidade)->get(); ?>
+                                    @if($e->count() > 0)
+                                        <?php $conta10++;?>
                                     @endif
                                 @endif
                             @endforeach
                         @endif
 
-                            @if ($d != null)
+                        @if($conta10 > 0)
+                            <?php $d = 'z';$global = 1 ?>
+                        @else
+                            <?php $d = null;?>
+                        @endif
 
+                            @if ($d != null)
                                 <div class="card">
                                     <div class="card-header">
                                         @if(array_key_exists('cliente_id',$recente))
-
-                                            <h5 class="title" style="margin-bottom: 0px;">Cliente: {{ $d->nome.' '.$d->apelido }}</h5>
+                                            <h5 class="title" style="margin-bottom: 0px;">Cliente: {{ $h->nome.' '.$h->apelido }}</h5>
                                         @else
                                             @foreach ($interrecentes as $rec)
                                                 @if ($rec->id == $recente['id'])
@@ -110,14 +124,17 @@
                                     </div>
 
                                 </div>
-                            @else
-                                <?php  $contaaviso++; ?>
-                                @if ($contaaviso == 1)
-                                    <?php $aviso2 = 'Ainda não criou nenhum registo nesta unidade'; ?>
-                                    <div class="alert alert-warning" role="alert"> {{ $aviso2 }}. </div>
-                                @endif
+
                             @endif
                     @endforeach
+                    @if ($global == 0)
+                        <?php $contaaviso++; ?>
+                        @if ($contaaviso == 1)
+                            <?php $aviso2 = 'Ainda não criou nenhum registo nesta unidade'; ?>
+                            <div class="alert alert-warning" role="alert"> {{ $aviso2 }}. </div>
+                        @endif
+                    @endif
+
                 @else
                     <div class="alert alert-warning" role="alert"> {{ $aviso2 }}. </div>
                 @endif
@@ -534,14 +551,23 @@
                             @foreach ($objectos as $objecto)
                                 <div class="col-4" style="padding-left: 0px">
                                     <div class="card" style="width: 19rem;">
-                                        <img src="{{ asset('storage/'.$this->origem.'/ficheiros/'.$objecto->link) }}" class="card-img-top" alt="{{ $objecto->nome_ficheiro }}">
+                                        <?php
+                                        $nomethumb3 = substr($objecto->link, -4, strpos($objecto->link, "."));
+                                        $nomethumb = 'thumb_'.$objecto->link;
+                                        if($nomethumb3 == '.pdf')
+                                        {
+                                            $nomethumb = substr($nomethumb, 0, strpos($nomethumb, "."));
+                                            $nomethumb .= '.png';
+                                        }
+                                        ?>
+                                        <img src="{{ asset('storage/'.$this->origem.'/thumbs/'.$nomethumb) }}" class="card-img-top" alt="{{ $objecto->nome_ficheiro }}">
                                         <div class="card-body">
                                             <h4 class="card-title">{{ $objecto->nome_ficheiro }}</h4>
                                             <p class="card-text">{{ $objecto->descricao_ficheiro }}</p>
                                             <div class="container">
                                                 <div class="row">
-                                                    <div class="col-6"><a href="#" class="btn btn-primary">Transferir</a></div>
-                                                    <div class="col-6" style="display: flex;justify-content: center;"><a href="#" class="btn btn-success">Abrir</a></div>
+                                                    <div class="col-6"><a download="{{ $objecto->nome_ficheiro }}" rel="noopener noreferrer" target="_blank" href="{{ asset('storage/'.$this->origem.'/ficheiros/'.$objecto->link) }}" class="btn btn-primary btn-fill">Transferir</a></div>
+                                                    <div class="col-6" style="display: flex;justify-content: center;"><a target="_blank" data-title="{{ $objecto->nome_ficheiro }}" href="/storage/{{ $this->origem }}/ficheiros/{{ $objecto->link }}" class="btn btn-success btn-fill">Abrir</a></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1677,6 +1703,16 @@
                             </p>
                         </div>
                     </div>
+                    <br>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Contactos de {{ $clienteuni->unidade }}</h4>
+                        </div>
+                        <div class="card-body">
+                            <p>Email: {{ $clienteuni->email }}</p>
+                            <p>Número de telefone: {{ $clienteuni->nr_telefone }}</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-8">
                     <div class="container vertical-scrollable" style="max-height:400px;">
@@ -1760,6 +1796,7 @@
                                 <th>Iniciou a</th>
                                 <th>Acabou a</th>
                                 <th>Registado por</th>
+                                <th>Registado em</th>
                                 @foreach ($registo as $a)
                                     @if ($a->Type == 'text')
                                         <th>{{ $a->Field }}</th>
@@ -1787,25 +1824,33 @@
                                 <td>
                                     {{ $colabclientes[$registselect['id']] }} ({{ $colabclientes[$colabclientes[$registselect['id']]] }})
                                 </td>
+                                <td>
+                                    <?php date_default_timezone_set('Europe/Lisbon'); ?>{{ \Carbon\Carbon::parse($registselect->created_at)->diffForHumans() }}
+                                </td>
                                 @foreach ($registo as $a)
 
                                     @if ($a->Type == 'text')
-                                    <td class="text-center">
+                                    <td class="text-center" style="text-align: center;display: table-cell;">
                                         {{ $vartext2[$it] }}
                                         <?php $it++; ?>
                                     </td>
                                     @endif
                                     @if ($a->Type == 'tinyint(4)')
-                                    <td class="text-center">
-                                        {{ $varchoose2[$ic] }}
-                                        <?php $ic++; ?>
+                                    <td class="text-center" style="text-align: center;display: table-cell;">
+                                        <?php
+                                        if($varchoose2[$ic] == 1) echo 'Mau';
+                                        elseif($varchoose2[$ic] == 2) echo 'Mais ou Menos';
+                                        elseif($varchoose2[$ic] == 3) echo 'Bom';
+                                         $ic++; ?>
                                     </td>
                                     @endif
 
                                 @endforeach
-                                <td style="text-align: center;">
-                                    <button wire:click="" class="btn btn-md btn-fill btn-info">Ver Fotos</button>
-                                </td>
+                                @if($btn == 'sim')
+                                    <td style="text-align: center;">
+                                        <button wire:click="verfotos('{{ $registselect->id }}','{{ $realizada }}')" class="btn btn-md btn-fill btn-info">Ver Fotos</button>
+                                    </td>
+                                @endif
                             </tr>
                         </tbody>
                     </table>
@@ -1874,6 +1919,36 @@
                                 @endif
                             </div>
                         </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@elseif($show == 13)
+    <div>
+        <div class="container-fluid" style="padding-left: 0px;">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Fotos do dia {{ $registselect2->data_realizada }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+                            @if($aviso == '')
+                                @foreach ($mostrarfotos as $mostrarfoto)
+                                    <div class="col-4" style="padding-left: 0px">
+                                        <div class="card" style="width: 19rem;">
+                                            <img src="{{ asset('storage/'.$origem.'/'.$unidade.'/fotos/'.$mostrarfoto['link']) }}" class="card-img-top" alt="{{ $mostrarfoto['nome_foto'] }}">
+                                            <div class="card-body">
+                                                <h4 class="card-title">{{ $mostrarfoto['nome_foto'] }}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="alert alert-warning"  role="alert"> {{ $aviso }}. </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

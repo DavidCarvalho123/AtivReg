@@ -1,5 +1,5 @@
 <!-- ======= Footer ======= -->
-<footer class="footer" role="contentinfo">
+<footer class="footer" role="contentinfo" style="padding-top: 80px;">
     <div class="container">
     <div class="row">
         <div class="col-md-7" style="margin-left: 25%">
