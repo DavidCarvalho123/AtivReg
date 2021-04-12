@@ -26,13 +26,13 @@ use Illuminate\Support\Facades\DB;
 use App\Models\niveis_intervencoes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Models\intervencoes_entidades;
 use App\Models\intervencoesindividuai;
 use Brotzka\DotenvEditor\DotenvEditor;
 use Illuminate\Support\Facades\Schema;
 use Org_Heigl\Ghostscript\Ghostscript;
 use Illuminate\Support\Facades\Storage;
 use App\Models\FicheirosPaginaprincipal;
-use App\Models\intervencoes_entidades;
 
 class Interior extends Component
 {
@@ -54,13 +54,15 @@ class Interior extends Component
     public $fotocli, $nomecli, $apelidocli, $datacli, $notascli, $unicli, $todoscli, $errocli, $familcli, $idcliantigo, $errorcli;
 
     public $clienteselect, $ab, $erro3, $colabclientes;
-    public $registselect, $registselect2 ,$realizada, $btn, $mostrarfotos = [], $clienteuni;
+    public $registselect, $registselect2 ,$realizada, $btn, $mostrarfotos = [], $clienteuni, $nivelintervencao;
+
+    public $noregisto;
 
     public function mount()
     {
         $env = new DotenvEditor();
         $this->origem = $env->getValue('DB_DATABASE2');
-
+        $this->noregisto = 0;
 
         if(Auth::user()->IsFamil == 0)
         {
@@ -126,22 +128,27 @@ class Interior extends Component
                     {
                         $arrays[] = (array) $object;
                     }
-                }
 
-                foreach($arrays as $array)
-                {
-                    $string = '';
-                    $string = implode('',$array);
-                    $string2 = rtrim($string,'s');
-                    $string2 .= '_id';
-                    $verificar = niveis_intervencoes::where('niveis_id',$colaboradores->niveis_id)->first();
-                    if($verificar->$string2 != '')
+                    foreach($arrays as $array)
                     {
-                        $this->stringtable2 = $string;
-                        $this->registo = DB::connection('mysql2')->select('describe '.$string);
-                        $this->nivelglobal = $colaboradores->Niveis->nivel;
+                        $string = '';
+                        $string = implode('',$array);
+                        $string2 = rtrim($string,'s');
+                        $string2 .= '_id';
+                        $verificar = niveis_intervencoes::where('niveis_id',$colaboradores->niveis_id)->first();
+                        if($verificar->$string2 != '')
+                        {
+                            $this->stringtable2 = $string;
+                            $this->registo = DB::connection('mysql2')->select('describe '.$string);
+                            $this->nivelglobal = $colaboradores->Niveis->nivel;
+                        }
                     }
                 }
+                else
+                {
+                    $this->noregisto = 1;
+                }
+
             }
         }
         else
@@ -261,7 +268,12 @@ class Interior extends Component
         else
         {
             //grupo
-
+            $this->registselect2 = intervencoesgrupo::where('id',$id)->first();
+            $verfotos = fotos::where('intervencao_grupo_id',$id)->get();
+            foreach($verfotos as $f)
+            {
+                array_push($this->mostrarfotos,$f);
+            }
         }
     }
 
@@ -343,6 +355,13 @@ class Interior extends Component
 
     public function removecli($recieve)
     {
+        $b = intervencoesindividuai::where('cliente_id',$recieve)->first();
+        if($b != null)
+        {
+            intervencoes_entidades::where('intervencao_individuai_id',$b->id)->delete();
+            intervencoesindividuai::where('cliente_id',$recieve)->delete();
+        }
+
         Cliente::where('id',$recieve)->delete();
         $this->javas = 52;
         $this->cli(7);
@@ -415,7 +434,7 @@ class Interior extends Component
             }
             else
             {
-                $this->fotocli->storeAs('public/'.$this->origem.'/'.$this->unidade.'/fotos', $imgnome);
+                $this->fotocli->storeAs('public/'.$this->origem.'/fotos', $imgnome);
                 Cliente::create([
                     'nome' => $this->nomecli,
                     'apelido' => $this->apelidocli,
@@ -471,11 +490,13 @@ class Interior extends Component
             $fich = Cliente::latest('created_at')->first();
         }
 
-
-        foreach($this->familcli as $uni)
+        if($this->familcli != '')
         {
-            $pag = Familiare::where('id',$uni)->first();
-            $fich->familiares()->attach($pag->id);
+            foreach($this->familcli as $uni)
+            {
+                $pag = Familiare::where('id',$uni)->first();
+                $fich->familiares()->attach($pag->id);
+            }
         }
         $this->javas = 51;
 
@@ -505,6 +526,7 @@ class Interior extends Component
                 'descricao_ficheiro' => $this->descfich,
             ]);
             $edita = Ficheiros::where('id',$this->idfich)->first();
+            FicheirosPaginaprincipal::where('ficheiros_id',$edita->id)->delete();
             foreach($this->unifich as $uni)
             {
                 $pag = Pagina_Principal::where('unidades_id',$uni)->first();
@@ -672,6 +694,17 @@ class Interior extends Component
     public function submitfamil()
     {
         $this->errofamil = '';
+        try
+        {
+            $this->validate([
+                'nr_telfamil' => 'size:9',
+            ]);
+        }
+        catch(Exception $e)
+        {
+            $this->errofamil = 'O número de telemóvel tem de ter 9 dígitos';
+            return;
+        }
         if($this->edit == 1)
         {
             $validar = Familiare::where('nome_utilizador',$this->utilfamil)->where('nome_utilizador','!=',$this->idfamil)->get();
@@ -823,7 +856,7 @@ class Interior extends Component
         $this->emailcolab = $this->paraeditar->email;
         $this->nomecolab = $this->paraeditar->nome;
         $this->apelidocolab = $this->paraeditar->apelido;
-        $this->cargocolab2 = $this->paraeditar->Niveis;
+        $this->cargocolab = '';
         $this->edit = 1;
     }
 
@@ -839,6 +872,17 @@ class Interior extends Component
         catch(Exception $e)
         {
             $this->errouni = 'A sigla tem que ter menos de 12 caractéres';
+            return;
+        }
+        try
+        {
+            $this->validate([
+                'nrtelemovel' => 'size:9',
+            ]);
+        }
+        catch(Exception $e)
+        {
+            $this->errouni = 'O número de telemóvel tem de ter 9 dígitos';
             return;
         }
         if($this->edit == 1)
@@ -892,6 +936,7 @@ class Interior extends Component
         $this->edit = 0;
         $this->show = $receive;
         $this->todosniveis = Nivei::get();
+        $this->nivelintervencao = niveis_intervencoes::get();
     }
 
     public function RemoveCargos($receive)
@@ -903,21 +948,38 @@ class Interior extends Component
             $this->javas = 24;
             return;
         }
-        $niveis = Nivei::where('id',$receive)->first();
-        $contador = $niveis->id - 1;
+
         $m = Nivei::where('id',$receive)->first();
         //verificar se a table existe
         $tabela = 'intervencoes_'.$m->nivel;
         if(Schema::connection('mysql2')->hasTable($tabela))
         {
             // existe
-            $query = "ALTER TABLE $this->origem.intervencoesentidades DROP FOREIGN KEY intervencoesentidades_ibfk_$contador";
+            $fkintervencoesentidades = DB::table('INFORMATION_SCHEMA.KEY_COLUMN_USAGE')->selectRaw('TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME')->whereRaw('REFERENCED_TABLE_SCHEMA = "'.$this->origem.'" AND TABLE_NAME = "intervencoesentidades"')->get();
+            foreach($fkintervencoesentidades as $fk)
+            {
+                if($fk->REFERENCED_TABLE_NAME == $tabela)
+                {
+                    $fkfinal = $fk->CONSTRAINT_NAME;
+                    break;
+                }
+            }
+            $query = "ALTER TABLE $this->origem.intervencoesentidades DROP FOREIGN KEY $fkfinal";
             DB::statement($query);
             $query = "ALTER TABLE $this->origem.intervencoesentidades DROP COLUMN id_$m->nivel";
             DB::statement($query);
             $query = "DELETE FROM $this->origem.niveis_intervencoes WHERE intervencoes_".$m->nivel."_id != ''";
             DB::statement($query);
-            $query = "ALTER TABLE $this->origem.niveis_intervencoes DROP FOREIGN KEY niveis_intervencoes_ibfk_$contador";
+            $fknivelintervencoes = DB::table('INFORMATION_SCHEMA.KEY_COLUMN_USAGE')->selectRaw('TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME')->whereRaw('REFERENCED_TABLE_SCHEMA = "'.$this->origem.'" AND TABLE_NAME = "niveis_intervencoes"')->get();
+            foreach($fknivelintervencoes as $fk)
+            {
+                if($fk->REFERENCED_TABLE_NAME == $tabela)
+                {
+                    $fkfinal = $fk->CONSTRAINT_NAME;
+                    break;
+                }
+            }
+            $query = "ALTER TABLE $this->origem.niveis_intervencoes DROP FOREIGN KEY $fkfinal";
             DB::statement($query);
             $query = "ALTER TABLE $this->origem.niveis_intervencoes DROP COLUMN intervencoes_".$m->nivel."_id";
             DB::statement($query);
@@ -941,9 +1003,27 @@ class Interior extends Component
         $this->nive(5);
     }
 
+    public function updatedtexto()
+    {
+        $this->erronivel = '';
+    }
+
+    public function updatedescolha()
+    {
+        $this->erronivel = '';
+    }
+
     public function nivelsubmit()
     {
-        $this->cargo = str_replace(' ','',$this->cargo);
+        if($this->check4 == true)
+        {
+            if($this->texto == 0 AND $this->escolha == 0)
+            {
+                $this->erronivel = 'Tem de introduzir pelo menos um campo para ser possível efetuar registos';
+                return;
+            }
+        }
+        $this->cargo = str_replace(' ','_',$this->cargo);
         $this->cargo = strtolower($this->cargo);
         $this->erronivel = '';
         $validar = Nivei::where('nivel',$this->cargo)->get();
@@ -952,6 +1032,7 @@ class Interior extends Component
             $this->erronivel = 'O cargo introduzido já existe';
             return;
         }
+
         if($this->podecli == true) $this->podecli = 1;
         else $this->podecli = 0;
         if($this->podefich == true) $this->podefich = 1;
@@ -975,16 +1056,16 @@ class Interior extends Component
             DB::statement($query);
             for($i = 1;$i <= $this->texto; $i++)
             {
-                $query = 'ALTER TABLE '.$this->origem.'.intervencoes_'.$this->cargo.' ADD '.$this->textarray[$i].' TEXT NULL';
+                $query = 'ALTER TABLE '.$this->origem.'.intervencoes_'.$this->cargo.' ADD `'.$this->textarray[$i].'` TEXT NULL';
                 DB::statement($query);
-                $query = "UPDATE $this->origem.intervencoes_$this->cargo SET ".$this->textarray[$i]." = 'NÃO APAGAR' WHERE id = '".$string."'";
+                $query = "UPDATE $this->origem.intervencoes_$this->cargo SET `".$this->textarray[$i]."` = 'NÃO APAGAR' WHERE id = '".$string."'";
                 DB::statement($query);
             }
             for($i = 1;$i <= $this->escolha; $i++)
             {
-                $query = 'ALTER TABLE '.$this->origem.'.intervencoes_'.$this->cargo.' ADD '.$this->escolharray[$i].' TINYINT(4) NULL';
+                $query = 'ALTER TABLE '.$this->origem.'.intervencoes_'.$this->cargo.' ADD `'.$this->escolharray[$i].'` TINYINT(4) NULL';
                 DB::statement($query);
-                $query = "UPDATE $this->origem.intervencoes_$this->cargo SET ".$this->escolharray[$i]." = '0' WHERE id = '$string'";
+                $query = "UPDATE $this->origem.intervencoes_$this->cargo SET `".$this->escolharray[$i]."` = '0' WHERE id = '$string'";
                 DB::statement($query);
             }
             $query = 'ALTER TABLE '.$this->origem.'.intervencoes_'.$this->cargo.' ADD created_at TIMESTAMP';
@@ -1046,19 +1127,16 @@ class Interior extends Component
     public function colabsubmit()
     {
         $this->errocolab = '';
-        if($this->edit == 0)
+        try
         {
-            try
-            {
-                $this->validate([
-                    'cargocolab' => 'required',
-                ]);
-            }
-            catch(Exception $e)
-            {
-                $this->errocolab = 'O colaborador tem que ter um cargo atribuido';
-                return;
-            }
+            $this->validate([
+                'cargocolab' => 'required',
+            ]);
+        }
+        catch(Exception $e)
+        {
+            $this->errocolab = 'O colaborador tem que ter um cargo atribuido';
+            return;
         }
         try
         {
@@ -1071,6 +1149,12 @@ class Interior extends Component
             $this->errocolab = 'O colaborador tem que pertencer a pelo menos uma unidade';
             return;
         }
+        $k = User::where('email',$this->emailcolab)->first();
+        if($k != null )
+        {
+            $this->errocolab = 'O email já existe.';
+            return;
+        }
         if($this->edit == 1)
         {
             $emailrepetido = Colaboradore::where('email',$this->emailcolab)->where('email','!=',$this->emailantigo)->where('IsDeleted',0)->get();
@@ -1079,12 +1163,12 @@ class Interior extends Component
                 $this->errocolab = 'O email submetido já existe';
                 return;
             }
-            $colabparaeditar = Colaboradore::where('email',$this->emailantigo)->first();
+            $colabparaeditar = Colaboradore::where('email',$this->emailantigo)->where('IsDeleted',0)->first();
             $colabparaeditar->update([
                 'email' => $this->emailcolab,
                 'nome' => $this->nomecolab,
                 'apelido' => $this->apelidocolab,
-                'niveis_id' => $this->cargocolab2->id,
+                'niveis_id' => $this->cargocolab,
                 'IsDeleted' => 0,
             ]);
             ColabUnidade::where('colaboradore_id',$colabparaeditar->id)->delete();
@@ -1097,6 +1181,7 @@ class Interior extends Component
                 'name' => $this->nomecolab,
                 'email' => $this->emailcolab,
             ]);
+            $this->javas = 23;
         }
         else
         {
@@ -1113,10 +1198,13 @@ class Interior extends Component
                 'niveis_id' => $this->cargocolab,
                 'IsDeleted' => 0,
                 ]);
-            $colabs = Colaboradore::latest('created_at')->first();
-            foreach($this->unidadecolab as $uni)
+            if($this->cargocolab != 1)
             {
-                $colabs->unidades()->attach($uni);
+                $colabs = Colaboradore::latest('created_at')->first();
+                foreach($this->unidadecolab as $uni)
+                {
+                    $colabs->unidades()->attach($uni);
+                }
             }
             User::create([
                 'db' => $this->origem,
@@ -1125,8 +1213,9 @@ class Interior extends Component
                 'password' => $this->passtemp,
                 'IsFamil' => 0,
             ]);
+            $this->javas = 21;
         }
-        $this->javas = 21;
+
         $this->emailcolab = '';
         $this->nomecolab = '';
         $this->apelidocolab = '';
@@ -1199,10 +1288,20 @@ class Interior extends Component
 
                     if($this->edit == 1)
                     {
-                        if($this->indi2 == 1) $inter = intervencoesindividuai::where('id',$this->idselecionado)->first();
-                        else $inter = intervencoesgrupo::where('id',$this->idselecionado)->first();
-                        $tableselected = DB::connection('mysql2')->table($string)->where('id',$inter->infoable_id)->first();
-                        $new_id = $tableselected->id;
+                        if($this->indi2 == 1)
+                        {
+                            $inter = intervencoesindividuai::where('id',$this->idselecionado)->first();
+                            $tableselected = intervencoes_entidades::where('intervencao_individuai_id',$inter->id)->first();
+                        }
+                        else
+                        {
+                            $inter = intervencoesgrupo::where('id',$this->idselecionado)->first();
+                            $tableselected = intervencoes_entidades::where('intervencao_grupo_id',$inter->id)->first();
+                        }
+                        $string = rtrim($string,'s');
+                        $string10 = 'id_';
+                        $string10 .= str_replace('intervencoes_','',$string);
+                        $new_id = $tableselected->$string10;
                     }
                     else
                     {
@@ -1235,7 +1334,7 @@ class Interior extends Component
                             $todasfotos = fotos::where('intervencao_individuai_id',$this->idselecionado)->get();
                             foreach($todasfotos as $fotosa)
                             {
-                                Storage::delete('public/'.$this->origem.'/'.$this->unidade.'/fotos/'.$fotosa->link);
+                                Storage::delete('public/'.$this->origem.'/fotos/'.$fotosa->link);
                             }
                             fotos::where('intervencao_individuai_id',$this->idselecionado)->delete();
                         }
@@ -1244,16 +1343,24 @@ class Interior extends Component
                             $todasfotos = fotos::where('intervencao_grupo_id',$this->idselecionado)->get();
                             foreach($todasfotos as $fotosa)
                             {
-                                Storage::delete('public/'.$this->origem.'/'.$this->unidade.'/fotos/'.$fotosa->link);
+                                Storage::delete('public/'.$this->origem.'/fotos/'.$fotosa->link);
                             }
                             fotos::where('intervencao_grupo_id',$this->idselecionado)->delete();
                         }
-                        if($this->indi2 == 1) $inter = intervencoesindividuai::where('id',$this->idselecionado)->first();
-                        else $inter = intervencoesgrupo::where('id',$this->idselecionado)->first();
+                        if($this->indi2 == 1)
+                        {
+                            $inter = intervencoesindividuai::where('id',$this->idselecionado)->first();
+                            $b = intervencoes_entidades::where('intervencao_individuai_id',$inter->id)->first();
+                        }
+                        else
+                        {
+                            $inter = intervencoesgrupo::where('id',$this->idselecionado)->first();
+                            $b = intervencoes_entidades::where('intervencao_grupo_id',$inter->id)->first();
+                        }
 
                         foreach($newarray as $key => $val)
                         {
-                            DB::connection('mysql2')->table($string)->where('id',$inter->infoable_id)->update([
+                            DB::connection('mysql2')->table($string)->where('id',$b->$string10)->update([
                                 $key => $val,
                             ]);
                         }
@@ -1276,12 +1383,11 @@ class Interior extends Component
                             if($this->indi2 == 0)
                             {
                                 // vem do grupo mas ficou individual
-                                intervencoesgrupo::where('id',$this->idselecionado)->delete();
 
-                                $tableselected = DB::connection('mysql2')->table($string)->latest('created_at')->first();
+
                                 foreach($this->selectedclients as $selectedclient)
                                 {
-                                    $tableselected->intervencoesindividuais()->create([
+                                    intervencoesindividuai::create([
                                         'data_realizada' => $this->datachoose,
                                         'hora_iniciada' => $horin,
                                         'hora_terminada' => $horfi,
@@ -1289,13 +1395,20 @@ class Interior extends Component
                                         'colaborador_id' => $this->colaboradoresId,
                                     ]);
                                 }
+                                $b = intervencoesindividuai::latest('created_at')->first();
+                                $query = "UPDATE $this->origem.intervencoesentidades SET intervencao_individuai_id = $b->id WHERE intervencao_grupo_id = $this->idselecionado";
+                                DB::statement($query);
+                                intervencoes_entidades::where('intervencao_grupo_id',$this->idselecionado)->update([
+                                    'intervencao_grupo_id' => null
+                                ]);
+                                intervencoesgrupo::where('id',$this->idselecionado)->delete();
                             }
                             else
                             {
-                                $tableselected = DB::connection('mysql2')->table($string)->latest('created_at')->where('id',$inter->infoable_id)->first();
+                                $z = intervencoesindividuai::where('id',$this->idselecionado)->first();
                                 foreach($this->selectedclients as $selectedclient)
                                 {
-                                    $tableselected->intervencoesindividuais()->update([
+                                    $z->update([
                                         'data_realizada' => $this->datachoose,
                                         'hora_iniciada' => $horin,
                                         'hora_terminada' => $horfi,
@@ -1308,10 +1421,9 @@ class Interior extends Component
                         }
                         else
                         {
-                            $tableselected = DB::connection('mysql2')->table($string)->latest('created_at')->first();
                             foreach($this->selectedclients as $selectedclient)
                             {
-                                $tableselected->intervencoesindividuais()->create([
+                                intervencoesindividuai::create([
                                     'data_realizada' => $this->datachoose,
                                     'hora_iniciada' => $horin,
                                     'hora_terminada' => $horfi,
@@ -1319,6 +1431,13 @@ class Interior extends Component
                                     'colaborador_id' => $this->colaboradoresId,
                                 ]);
                             }
+                            $tableselected = DB::connection('mysql2')->table($string)->latest('created_at')->first();
+                            $a = intervencoesindividuai::latest('created_at')->first();
+                            $string10 = "id_";
+                            $string10 .= str_replace('intervencoes_','',$string);
+                            date_default_timezone_set('Europe/Lisbon');
+                            $query = "INSERT INTO $this->origem.intervencoesentidades (intervencao_individuai_id,$string10) VALUES ('$a->id','$tableselected->id')";
+                            DB::statement($query);
                         }
                         //fotos individual
                         if($this->edit == 1)
@@ -1334,7 +1453,7 @@ class Interior extends Component
                             $ext = $foto->extension();
                             $imgnome = Str::random();
                             $imgnome = $imgnome.'.'.$ext;
-                            $foto->storeAs('public/'.$this->origem.'/'.$this->unidade.'/fotos', $imgnome);
+                            $foto->storeAs('public/'.$this->origem.'/fotos', $imgnome);
                             fotos::create([
                                 'nome_foto' => $origname,
                                 'link' => $imgnome,
@@ -1350,9 +1469,9 @@ class Interior extends Component
                             if($this->indi2 == 1)
                             {
                                 // vem do individual mas foi adicionado mais um cliente
-                                intervencoesindividuai::where('id',$this->idselecionado)->delete();
-                                $tableselected = DB::connection('mysql2')->table($string)->where('id',$inter->infoable_id)->first();
-                                $tableselected->intervencoesgrupo()->create([
+
+
+                                intervencoesgrupo::create([
                                     'data_realizada' => $this->datachoose,
                                     'hora_iniciada' => $horin,
                                     'hora_terminada' => $horfi,
@@ -1363,11 +1482,17 @@ class Interior extends Component
                                 {
                                     $intervgru->Clientes()->attach($selectedclient['id']);
                                 }
+                                $query = "UPDATE $this->origem.intervencoesentidades SET intervencao_grupo_id = $intervgru->id WHERE intervencao_individuai_id = $this->idselecionado";
+                                DB::statement($query);
+                                intervencoes_entidades::where('intervencao_individuai_id',$this->idselecionado)->update([
+                                    'intervencao_individuai_id' => null,
+                                ]);
+                                intervencoesindividuai::where('id',$this->idselecionado)->delete();
                             }
                             else
                             {
-                                $tableselected = DB::connection('mysql2')->table($string)->where('id',$inter->infoable_id)->first();
-                                $tableselected->intervencoesgrupo()->update([
+                                $b = intervencoesgrupo::where('id',$this->idselecionado)->first();
+                                $b->update([
                                     'data_realizada' => $this->datachoose,
                                     'hora_iniciada' => $horin,
                                     'hora_terminada' => $horfi,
@@ -1383,8 +1508,7 @@ class Interior extends Component
                         }
                         else
                         {
-                            $tableselected = DB::connection('mysql2')->table($string)->latest('created_at')->first();
-                            $tableselected->intervencoesgrupo()->create([
+                            intervencoesgrupo::create([
                                 'data_realizada' => $this->datachoose,
                                 'hora_iniciada' => $horin,
                                 'hora_terminada' => $horfi,
@@ -1395,6 +1519,13 @@ class Interior extends Component
                             {
                                 $intervgru->Clientes()->attach($selectedclient['id']);
                             }
+                            $tableselected = DB::connection('mysql2')->table($string)->latest('created_at')->first();
+                            $a = intervencoesgrupo::latest('created_at')->first();
+                            $string10 = "id_";
+                            $string10 .= str_replace('intervencoes_','',$string);
+                            date_default_timezone_set('Europe/Lisbon');
+                            $query = "INSERT INTO $this->origem.intervencoesentidades (intervencao_grupo_id,$string10) VALUES ('$a->id','$tableselected->id')";
+                            DB::statement($query);
                         }
                         //fotos grupos
                         if($this->edit == 1)
@@ -1410,7 +1541,7 @@ class Interior extends Component
                             $ext = $foto->extension();
                             $imgnome = Str::random();
                             $imgnome = $imgnome.'.'.$ext;
-                            $foto->storeAs('public/'.$this->origem.'/'.$this->unidade.'/fotos', $imgnome);
+                            $foto->storeAs('public/'.$this->origem.'/fotos', $imgnome);
                             fotos::create([
                                 'nome_foto' => $origname,
                                 'link' => $imgnome,
@@ -1560,7 +1691,10 @@ class Interior extends Component
             $this->varchoose = [];
             //intervencão especifica
             $string = $this->stringtable2;
-            $interespeci = DB::connection('mysql2')->table($string)->where('id',$interindi->infoable_id)->first();
+            $b = intervencoes_entidades::where('intervencao_individuai_id',$interindi->id)->first();
+            $string10 = 'id_';
+            $string10 .= str_replace('intervencoes_','',$string);
+            $interespeci = DB::connection('mysql2')->table($string)->where('id',$b->$string10)->first();
             foreach($this->registo as $a)
             {
                 if($a['Type'] == 'text')
@@ -1596,7 +1730,10 @@ class Interior extends Component
             $this->varchoose = [];
             //intervencão especifica
             $string = $this->stringtable2;
-            $interespeci = DB::connection('mysql2')->table($string)->where('id',$intergrup->infoable_id)->first();
+            $b = intervencoes_entidades::where('intervencao_grupo_id',$intergrup->id)->first();
+            $string10 = 'id_';
+            $string10 .= str_replace('intervencoes_','',$string);
+            $interespeci = DB::connection('mysql2')->table($string)->where('id',$b->$string10)->first();
             foreach($this->registo as $a)
             {
                 if($a['Type'] == 'text')
@@ -1754,22 +1891,29 @@ class Interior extends Component
                 Storage::delete('public/'.$this->origem.'/'.$this->unidade.'/fotos/'.$fotosa->link);
             }
             fotos::where('intervencao_individuai_id',$this->registoid)->delete();
-            $info = intervencoesindividuai::where('id',$this->registoid)->first();
             $string = $this->stringtable2;
-            DB::connection('mysql2')->table($string)->where('id',$info->infoable_id)->delete();
+            $b = intervencoes_entidades::where('intervencao_individuai_id',$this->registoid)->first();
+            $string10 = 'id_';
+            $string10 .= str_replace('intervencoes_','',$string);
+            DB::connection('mysql2')->table($string)->where('id',$b->$string10)->delete();
+            $b->delete();
             intervencoesindividuai::where('id',$this->registoid)->delete();
         }
         else
         {
+
             $todasfotos = fotos::where('intervencao_grupo_id',$this->registoid)->get();
             foreach($todasfotos as $fotosa)
             {
                 Storage::delete('public/'.$this->origem.'/'.$this->unidade.'/fotos/'.$fotosa->link);
             }
             fotos::where('intervencao_grupo_id',$this->registoid)->delete();
-            $info = intervencoesgrupo::where('id',$this->registoid)->first();
             $string = $this->stringtable2;
-            DB::connection('mysql2')->table($string)->where('id',$info->infoable_id)->delete();
+            $b = intervencoes_entidades::where('intervencao_grupo_id',$this->registoid)->first();
+            $string10 = 'id_';
+            $string10 .= str_replace('intervencoes_','',$string);
+            DB::connection('mysql2')->table($string)->where('id',$b->$string10)->delete();
+            $b->delete();
             intervencoesgrupo::where('id',$this->registoid)->delete();
         }
 
@@ -1893,7 +2037,6 @@ class Interior extends Component
 
     public function IrRegistos($receive, $placeholder)
     {
-        $this->edit = 0;
         $this->fechar = '';
         $this->show = $receive;
         if(Auth::user()->IsFamil == 0)

@@ -53,7 +53,7 @@ class Login extends Component
         if(empty($dbcheck))
         {
             // ver se a base de dados existe ou não
-            DB::statement('create database ' .$bd);
+            DB::statement('create database ' .$bd.' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
             criardb();
             return redirect('/unidades');
         }

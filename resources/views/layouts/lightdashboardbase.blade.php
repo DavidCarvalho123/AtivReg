@@ -503,6 +503,24 @@
             });
         }
 
+        function showNotificationUpColab(from, align)
+        {
+            color = Math.floor((Math.random() * 4) + 1);
+
+            $.notify({
+                icon: "nc-icon nc-bulb-63",
+                message: "A senha foi atualizada com sucesso"
+
+            },{
+                type: 'primary',
+                timer: 250,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
+
         window.addEventListener('cleanfiles', event => {
             var file = document.getElementById("fileUpload");
             file.value = file.defaultValue;

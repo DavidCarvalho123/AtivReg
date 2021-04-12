@@ -5,14 +5,14 @@
     <!-- Pagina Principal -->
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-8">
+                <div @if($noregisto == 1)class="col-lg-12"@else class="col-lg-8" @endif>
                     <h3>Ficheiros mais recentes:</h3>
                     <br>
                     <div class="container">
                         <div class="row">
                             @if($aviso == '')
                                 @foreach ($objectos as $objecto)
-                                    <div class="col" style="padding-left: 0px">
+                                    <div @if($noregisto == 1)class="col-4"@else class="col" @endif style="padding-left: 0px">
                                         <div class="card" style="width: 19rem;">
                                             <?php   $nomethumb3 = substr($objecto->link, -4, strpos($objecto->link, "."));
                                             $nomethumb = 'thumb_'.$objecto->link;
@@ -44,105 +44,105 @@
                         <button class="btn btn-primary btn-fill" wire:click="tabelas(1)">Mostrar todos os ficheiros da unidade</button>
                     @endif
                 </div>
+                @if($noregisto == 0)
+                    <div class="col-lg-4">
+                        <h3>Registos mais recentes:</h3>
+                        <br>
+                    @if ($aviso2 == '')
 
-                <div class="col-lg-4">
-                    <h3>Registos mais recentes:</h3>
-                    <br>
-                @if ($aviso2 == '')
+                        <?php
 
-                    <?php
+                            function compare($a, $b)
+                            {
+                                return strtotime($b['created_at']) - strtotime($a['created_at']);
+                            }
 
-                        function compare($a, $b)
-                        {
-                            return strtotime($b['created_at']) - strtotime($a['created_at']);
-                        }
-
-                    usort($regrecente, 'compare');?>
-                        <?php  $contaaviso = 0; ?>
-                        <?php $d = 't';$global = 0;?>
-                    @foreach ($regrecente as $recente)
-                        <?php $conta10 = 0 ?>
-                        @if(array_key_exists('cliente_id',$recente))
-                            <?php $h = $clientesrecentes->where('id', $recente['cliente_id'])->first();
-                            if($h != null) $conta10 = 1
-                            ?>
-                        @else
-                            @foreach ($interrecentes as $rec)
-                                @if($rec->id == $recente['id'])
-                                    <?php $e = $rec->Clientes()->where('unidades_id','=',$unidade)->get(); ?>
-                                    @if($e->count() > 0)
-                                        <?php $conta10++;?>
-                                    @endif
-                                @endif
-                            @endforeach
-                        @endif
-
-                        @if($conta10 > 0)
-                            <?php $d = 'z';$global = 1 ?>
-                        @else
-                            <?php $d = null;?>
-                        @endif
-
-                            @if ($d != null)
-                                <div class="card">
-                                    <div class="card-header">
-                                        @if(array_key_exists('cliente_id',$recente))
-                                            <h5 class="title" style="margin-bottom: 0px;">Cliente: {{ $h->nome.' '.$h->apelido }}</h5>
-                                        @else
-                                            @foreach ($interrecentes as $rec)
-                                                @if ($rec->id == $recente['id'])
-                                                    <?php $e = $rec->Clientes()->get() ?>
-                                                    <h5 class="title" style="margin-bottom: 0px;">Clientes:
-                                                        @foreach ($e as $f)
-                                                            {{ $f->nome.' '.$f->apelido }},
-                                                        @endforeach
-                                                    </h5>
-                                                @endif
-                                            @endforeach
+                        usort($regrecente, 'compare');?>
+                            <?php  $contaaviso = 0; ?>
+                            <?php $d = 't';$global = 0;?>
+                        @foreach ($regrecente as $recente)
+                            <?php $conta10 = 0 ?>
+                            @if(array_key_exists('cliente_id',$recente))
+                                <?php $h = $clientesrecentes->where('id', $recente['cliente_id'])->first();
+                                if($h != null) $conta10 = 1
+                                ?>
+                            @else
+                                @foreach ($interrecentes as $rec)
+                                    @if($rec->id == $recente['id'])
+                                        <?php $e = $rec->Clientes()->where('unidades_id','=',$unidade)->get(); ?>
+                                        @if($e->count() > 0)
+                                            <?php $conta10++;?>
                                         @endif
+                                    @endif
+                                @endforeach
+                            @endif
 
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">
-                                                <p class="description"><?php date_default_timezone_set('Europe/Lisbon'); ?>{{ \Carbon\Carbon::parse($recente['created_at'])->diffForHumans(['parts' => 2, 'join' => true]) }}</p>
-                                            </div>
-                                            <div class="col-4">
-                                                @if (array_key_exists('cliente_id',$recente))
-                                                    <?php $indi = 1; ?>
-                                                @else
-                                                    <?php $indi = 0; ?>
-                                                @endif
-                                                <div wire:click="Clone('{{ $recente['id'] }}', {{ $indi }},'0')" class="button-container" style="padding-right: 5px;margin-bottom: 5px;">
-                                                    <button style="padding-left: 8px;padding-right: 8px;" class="btn btn-warning btn-fill pull-right" type="submit">
-                                                        <i class="nc-icon nc-single-copy-04" style="position: relative;top: 2px;"></i>
-                                                        Clonar
-                                                    </button>
+                            @if($conta10 > 0)
+                                <?php $d = 'z';$global = 1 ?>
+                            @else
+                                <?php $d = null;?>
+                            @endif
+
+                                @if ($d != null)
+                                    <div class="card">
+                                        <div class="card-header">
+                                            @if(array_key_exists('cliente_id',$recente))
+                                                <h5 class="title" style="margin-bottom: 0px;">Cliente: {{ $h->nome.' '.$h->apelido }}</h5>
+                                            @else
+                                                @foreach ($interrecentes as $rec)
+                                                    @if ($rec->id == $recente['id'])
+                                                        <?php $e = $rec->Clientes()->get() ?>
+                                                        <h5 class="title" style="margin-bottom: 0px;">Clientes:
+                                                            @foreach ($e as $f)
+                                                                {{ $f->nome.' '.$f->apelido }},
+                                                            @endforeach
+                                                        </h5>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <p class="description"><?php date_default_timezone_set('Europe/Lisbon'); ?>{{ \Carbon\Carbon::parse($recente['created_at'])->diffForHumans(['parts' => 2, 'join' => true]) }}</p>
+                                                </div>
+                                                <div class="col-4">
+                                                    @if (array_key_exists('cliente_id',$recente))
+                                                        <?php $indi = 1; ?>
+                                                    @else
+                                                        <?php $indi = 0; ?>
+                                                    @endif
+                                                    <div wire:click="Clone('{{ $recente['id'] }}', {{ $indi }},'0')" class="button-container" style="padding-right: 5px;margin-bottom: 5px;">
+                                                        <button style="padding-left: 8px;padding-right: 8px;" class="btn btn-warning btn-fill pull-right" type="submit">
+                                                            <i class="nc-icon nc-single-copy-04" style="position: relative;top: 2px;"></i>
+                                                            Clonar
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
 
-                                </div>
-
+                                @endif
+                        @endforeach
+                        @if ($global == 0)
+                            <?php $contaaviso++; ?>
+                            @if ($contaaviso == 1)
+                                <?php $aviso2 = 'Ainda não criou nenhum registo nesta unidade'; ?>
+                                <div class="alert alert-warning" role="alert"> {{ $aviso2 }}. </div>
                             @endif
-                    @endforeach
-                    @if ($global == 0)
-                        <?php $contaaviso++; ?>
-                        @if ($contaaviso == 1)
-                            <?php $aviso2 = 'Ainda não criou nenhum registo nesta unidade'; ?>
-                            <div class="alert alert-warning" role="alert"> {{ $aviso2 }}. </div>
                         @endif
+
+                    @else
+                        <div class="alert alert-warning" role="alert"> {{ $aviso2 }}. </div>
                     @endif
-
-                @else
-                    <div class="alert alert-warning" role="alert"> {{ $aviso2 }}. </div>
+                    @if($aviso2 == '')
+                        <button class="btn btn-primary btn-fill" wire:click="tabelas(0)">Mostrar todos os seus registos</button>
+                    @endif
+                    </div>
                 @endif
-                @if($aviso2 == '')
-                    <button class="btn btn-primary btn-fill" wire:click="tabelas(0)">Mostrar todos os seus registos</button>
-                @endif
-                </div>
-
             </div>
         </div>
 
@@ -336,7 +336,7 @@
                                                                                     @if($selected['foto'] == null)
                                                                                         <img class="w-100" src="{{ asset('light-dashboard/assets/img/default-avatar.png') }}"  alt="Não foi encontrada imagem">
                                                                                     @else
-                                                                                        <img class="w-100" src="{{ asset('storage/'.$this->origem.'/'.$this->unidade.'/fotos/'.$selected['foto']) }}" alt="{{ $selected['nome'] }}">
+                                                                                        <img class="w-100" src="{{ asset('storage/'.$this->origem.'/fotos/'.$selected['foto']) }}" alt="{{ $selected['nome'] }}">
                                                                                     @endif
                                                                                 </td>
                                                                                 <td style="padding-left: 30px;padding-right: 30px;text-align: center;">{{ $selected['nome'] }}</td>
@@ -457,7 +457,7 @@
                                                                 @if($cliente->foto == null)
                                                                     <img class="avatar border-gray" src="{{ asset('light-dashboard/assets/img/default-avatar.png') }}"  alt="Não foi encontrada imagem">
                                                                 @else
-                                                                    <img class="avatar border-gray" src="{{ asset('storage/'.$this->origem.'/'.$this->unidade.'/fotos/'.$cliente->foto) }}" alt="{{ $cliente->nome }}">
+                                                                    <img class="avatar border-gray" src="{{ asset('storage/'.$this->origem.'/fotos/'.$cliente->foto) }}" alt="{{ $cliente->nome }}">
                                                                 @endif
                                                                 <h5 class="title">{{ $cliente->nome.' '.$cliente->apelido }}</h5>
                                                             </div>
@@ -656,7 +656,7 @@
                                 return $records;
                             }
 
-                            $allclients = record_sort($allclients,"infoable_id");?>
+                            $allclients = record_sort($allclients,"id");?>
                             @foreach ($allclients as $registo2)
                             <tr>
                                 @foreach ($registo as $a)
@@ -961,7 +961,7 @@
                                                     @for ($i = 1;$i <= $texto; $i++)
                                                         <div class="form-group">
                                                             <label>Nome do campo</label>
-                                                            <input class="form-control" type="text" min="0" wire:model="textarray.{{ $i }}">
+                                                            <input class="form-control" type="text" min="0" wire:model="textarray.{{ $i }}" required>
                                                         </div>
                                                     @endfor
                                                 </div>
@@ -973,7 +973,7 @@
                                                     @for ($i = 1;$i <= $escolha; $i++)
                                                         <div class="form-group">
                                                             <label>Nome do campo</label>
-                                                            <input class="form-control" type="text" min="0" wire:model="escolharray.{{ $i }}">
+                                                            <input class="form-control" type="text" min="0" wire:model="escolharray.{{ $i }}" required>
                                                         </div>
                                                     @endfor
                                                 </div>
@@ -995,57 +995,67 @@
                             </div>
                         </div>
                         <div class="col-8">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">Todos os cargos criados</h4>
-                                </div>
-                                <div class="card-body table-full-width table-responsive" style="margin-left: 0px;">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Cargo</th>
-                                                <th>Pode criar clientes?</th>
-                                                <th>Pode introduzir ficheiros na página principal?</th>
-                                                <th>Pode criar contas de familiares?</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($todosniveis as $nivel)
-                                            <tr>
-                                                <td>
-                                                    {{ $nivel->nivel }}
-                                                </td>
-                                                <td class="text-center">
-                                                    @if ($nivel->clientes == 0)
-                                                        Não
+                            <div class="container vertical-scrollable" style="max-height:500px;">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Todos os cargos criados</h4>
+                                    </div>
+                                    <div class="card-body table-full-width table-responsive" style="margin-left: 0px;">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Cargo</th>
+                                                    <th>Pode criar clientes?</th>
+                                                    <th>Pode introduzir ficheiros na página principal?</th>
+                                                    <th>Pode criar contas de familiares?</th>
+                                                    <th style="display:table-cell;">Pode efetuar registos?</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($todosniveis as $nivel)
+                                                <tr>
+                                                    <td>
+                                                        {{ $nivel->nivel }}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @if ($nivel->clientes == 0)
+                                                            Não
+                                                        @else
+                                                            Sim
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @if ($nivel->ficheiros == 0)
+                                                            Não
+                                                        @else
+                                                            Sim
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @if ($nivel->familiares == 0)
+                                                            Não
+                                                        @else
+                                                            Sim
+                                                        @endif
+                                                    </td>
+                                                    <td style="display:table-cell;">
+                                                        @if($nivelintervencao->where('niveis_id',$nivel->id)->count() < 1)
+                                                            Não
+                                                        @else
+                                                            Sim
+                                                        @endif
+                                                    </td>
+                                                    @if ($nivel->nivel == 'Admin')
                                                     @else
-                                                        Sim
+                                                    <td style="text-align: center;display: table-cell;">
+                                                        <button wire:click="RemoveCargos({{ $nivel->id }})" class="btn btn-md btn-fill btn-danger">Eliminar</button>
+                                                    </td>
                                                     @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if ($nivel->ficheiros == 0)
-                                                        Não
-                                                    @else
-                                                        Sim
-                                                    @endif
-                                                </td>
-                                                <td class="text-center" style="display:table-cell;">
-                                                    @if ($nivel->familiares == 0)
-                                                        Não
-                                                    @else
-                                                        Sim
-                                                    @endif
-                                                </td>
-                                                @if ($nivel->nivel == 'Admin')
-                                                @else
-                                                <td style="text-align: center;display: table-cell;">
-                                                    <button wire:click="RemoveCargos({{ $nivel->id }})" class="btn btn-md btn-fill btn-danger">Eliminar</button>
-                                                </td>
-                                                @endif
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1143,17 +1153,11 @@
                                     <div class="col-5">
                                         <div class="form-group">
                                             <label for="cargocolab">Cargo</label>
-                                            <select class="form-control" id="cargocolab" wire:model.defer="cargocolab"
-                                            @if ($edit == 1)
-                                                disabled
-                                            @endif>
-                                            @if ($edit == 1)
-                                                <option value="">{{ $cargocolab2->nivel }}</option>
-                                            @else
+                                            <select class="form-control" id="cargocolab" wire:model.defer="cargocolab">
+                                                <option value="">Carregue para abrir</option>
                                                 @foreach ($todosniveis as $n)
                                                     <option value="{{ $n->id }}">{{ $n->nivel }}</option>
                                                 @endforeach
-                                            @endif
                                             </select>
                                         </div>
                                     </div>
@@ -1201,7 +1205,7 @@
                                         <th>Nome</th>
                                         <th>Email</th>
                                         <th>Cargo</th>
-                                        <th>Unidade</th>
+                                        <th>Unidades</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1218,7 +1222,7 @@
                                         </td>
                                         <td style="display:table-cell;">
                                             @foreach ($colab->unidades as $uni)
-                                                {{ $uni->unidade }}
+                                                {{ $uni->unidade }};
                                             @endforeach
                                         </td>
                                         @if ($colab->email == Auth::user()->email)
@@ -1250,6 +1254,13 @@
         {
             echo '<script type="text/javascript">',
             'showNotificationRemColab("bottom","right");',
+            '</script>';
+            $this->emit('refreshJS');
+        }
+        if ($javas == 23)
+        {
+            echo '<script type="text/javascript">',
+            'showNotificationUpColab("bottom","right");',
             '</script>';
             $this->emit('refreshJS');
         }
@@ -1331,8 +1342,8 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="familcli"><div class="row"><div class="col-3.5">Familiares</div><div class="col-8.5" style="padding-left: 0px;"><h6 style="top: 2px;position: relative;">(CTRL+Click para escolher vários)</h6></div></div></label>
-                                            <select class="form-control" id="familcli" wire:model.defer="familcli" multiple required>
+                                            <label for="familcli"><div class="row"><div class="col-3.5" style="padding-left: 5px;">Familiares</div><div class="col-8.5" style="padding-left: 0px;"><h6 style="top: 2px;position: relative;">(CTRL+Click para escolher vários)</h6></div></div></label>
+                                            <select class="form-control" id="familcli" wire:model.defer="familcli" multiple>
                                                 @foreach ($todosfamils as $n)
                                                     <option value="{{ $n->id }}">{{ $n->nome.' '.$n->apelido }}</option>
                                                 @endforeach
@@ -1689,7 +1700,7 @@
                                     @if($clienteselect->foto == null)
                                         <img class="avatar border-gray" src="{{ asset('light-dashboard/assets/img/default-avatar.png') }}"  alt="Não foi encontrada imagem">
                                     @else
-                                        <img class="avatar border-gray" src="{{ asset('storage/'.$this->origem.'/'.$clienteselect->unidades_id.'/fotos/'.$clienteselect->foto) }}" alt="{{ $clienteselect->nome }}">
+                                        <img class="avatar border-gray" src="{{ asset('storage/'.$this->origem.'/fotos/'.$clienteselect->foto) }}" alt="{{ $clienteselect->nome }}">
                                     @endif
                                     <h5 class="title">{{ $clienteselect->nome.' '.$clienteselect->apelido }}</h5>
                                 </div>
@@ -1771,10 +1782,10 @@
                                 @endif
                             </div>
                         </div>
+                        @if ($erro3 == '')
+                            <button class="btn btn-primary btn-fill" style="float:right;margin-right:20px;margin-top:10px" wire:click="Vertudo({{ $clienteselect->id }})">Mostrar todas as atividades</button>
+                        @endif
                     </div>
-                    @if ($erro3 == '')
-                        <button class="btn btn-primary btn-fill" style="float:right;margin-right:20px;margin-top:10px" wire:click="Vertudo({{ $clienteselect->id }})">Mostrar todas as atividades</button>
-                    @endif
                 </div>
             </div>
         </div>
@@ -1937,10 +1948,7 @@
                                 @foreach ($mostrarfotos as $mostrarfoto)
                                     <div class="col-4" style="padding-left: 0px">
                                         <div class="card" style="width: 19rem;">
-                                            <img src="{{ asset('storage/'.$origem.'/'.$unidade.'/fotos/'.$mostrarfoto['link']) }}" class="card-img-top" alt="{{ $mostrarfoto['nome_foto'] }}">
-                                            <div class="card-body">
-                                                <h4 class="card-title">{{ $mostrarfoto['nome_foto'] }}</h4>
-                                            </div>
+                                            <img src="{{ asset('storage/'.$origem.'/fotos/'.$mostrarfoto['link']) }}" class="card-img-top" alt="{{ $mostrarfoto['nome_foto'] }}">
                                         </div>
                                     </div>
                                 @endforeach

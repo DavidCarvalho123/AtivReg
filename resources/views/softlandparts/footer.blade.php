@@ -1,12 +1,12 @@
 <!-- ======= Footer ======= -->
 <footer class="footer" role="contentinfo" style="padding-top: 80px;">
     <div class="container">
-    <div class="row">
-        <div class="col-md-7" style="margin-left: 25%">
+    <div class="row justify-content-center text-center">
+        <div class="col-md-7">
         <div class="row site-section pt-0">
             <div class="col-md-5 mb-4 mb-md-0">
                 <h3>Sobre o Ativreg</h3>
-                <p>O Ativreg é uma aplicação web de registos de atividades diárias, destinada para estruturas residenciais, creches, escolas privadas e entre outros</p>
+                <p>O Ativreg é uma aplicação web de registos de atividades diárias, destinada para estruturas residenciais, creches, escolas privadas e entre outros.</p>
             </div>
             <div class="col-md-2 mb-4 mb-md-0">
 

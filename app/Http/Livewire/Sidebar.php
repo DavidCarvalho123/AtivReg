@@ -67,6 +67,7 @@ class Sidebar extends Component
             $tabela = 'intervencoes_'.$colaboradores->Niveis->nivel;
             if(Schema::connection('mysql2')->hasTable($tabela))
             {
+                
                 if($colaboradores->niveis_id != 1)
                 {
                     $tables = DB::connection('mysql2')->select("SHOW TABLES LIKE 'intervencoes\_%'");

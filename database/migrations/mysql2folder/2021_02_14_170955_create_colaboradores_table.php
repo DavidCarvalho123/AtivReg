@@ -18,7 +18,7 @@ class CreateColaboradoresTable extends Migration
             $table->string('email');
             $table->string('nome',70);
             $table->string('apelido',70)->nullable();
-            $table->foreignId('niveis_id')->constrained()->nullable();
+            $table->foreignId('niveis_id')->nullable()->constrained();
             $table->boolean('IsDeleted');
             $table->timestamps();
         });

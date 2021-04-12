@@ -42,17 +42,18 @@
                                 </a>
                             </li>
 
-                        @foreach ($titulos as $titulo)
-                            <br style="margin-top: 10px;">
-                            <li class="nav-item {{ $viewnivel }}" wire:click="ViewNiveis('{{ $titulo }}')">
-                                <a class="nav-link" href="#" onclick="event.preventDefault();" >
-                                    <i class="nc-icon nc-icon nc-notes"></i>
-                                    <p>{{ $titulo }}</p>
-                                </a>
-                            </li>
-                        @endforeach
+                            @foreach ($titulos as $titulo)
+                                <br style="margin-top: 10px;">
+                                <li class="nav-item {{ $viewnivel }}" wire:click="ViewNiveis('{{ $titulo }}')">
+                                    <a class="nav-link" href="#" onclick="event.preventDefault();" >
+                                        <i class="nc-icon nc-icon nc-notes"></i>
+                                        <p>{{ $titulo }}</p>
+                                    </a>
+                                </li>
+                            @endforeach
+
                         @else
-                        <?php $i = 0;?>
+                            <?php $i = 0;?>
                             @foreach ($cli as $cliente)
                                 <li class="nav-item {{ $clientes[$i] }}" wire:click="ViewClientes('{{ $cliente }}','{{ $i }}')">
                                     <a class="nav-link" href="#" onclick="event.preventDefault();" >
