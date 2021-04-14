@@ -1807,7 +1807,7 @@
                                 <th>Iniciou a</th>
                                 <th>Acabou a</th>
                                 <th>Registado por</th>
-                                <th>Registado em</th>
+                                <th>Registado</th>
                                 @foreach ($registo as $a)
                                     @if ($a->Type == 'text')
                                         <th>{{ $a->Field }}</th>
@@ -1849,9 +1849,9 @@
                                     @if ($a->Type == 'tinyint(4)')
                                     <td class="text-center" style="text-align: center;display: table-cell;">
                                         <?php
-                                        if($varchoose2[$ic] == 1) echo 'Mau';
+                                        if($varchoose2[$ic] == 1) echo 'Não';
                                         elseif($varchoose2[$ic] == 2) echo 'Mais ou Menos';
-                                        elseif($varchoose2[$ic] == 3) echo 'Bom';
+                                        elseif($varchoose2[$ic] == 3) echo 'Sim';
                                          $ic++; ?>
                                     </td>
                                     @endif

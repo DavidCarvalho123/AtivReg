@@ -560,7 +560,11 @@ class Interior extends Component
             $sonome = $imgnome;
             $imgnome = $imgnome.'.'.$ext;
             $this->ficheiros->storeAs('public/'.$this->origem.'/ficheiros',$imgnome);
-
+            $t = public_path()."\storage\\".$this->origem."\\thumbs";
+            if(!file_exists($t))
+            {
+                mkdir($t);
+            }
 
             if($ext != 'pdf')
             {
@@ -1774,7 +1778,6 @@ class Interior extends Component
                 $this->updatedpesquisaNomeGrupo();
             }
         }
-
         $this->emit('IrRegistos',0,$this->nivelglobal);
     }
 
